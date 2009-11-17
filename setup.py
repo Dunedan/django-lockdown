@@ -26,7 +26,7 @@ long_description = (open('README.txt').read() +
 setup(
     name='django-lockdown',
     version='0.1.0dev%s' % hgrev,
-    description='Site-wide or per-view simple password protection',
+    description='Site-wide or per-view lockdown with customizable preview authorization',
     long_description=long_description,
     author='Carl Meyer',
     author_email='carl@dirtcircle.com',

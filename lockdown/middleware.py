@@ -58,7 +58,7 @@ class LockdownMiddleware(object):
             if pattern.search(request.path):
                 return None
 
-        # validate form data, if submitted
+        # validate form data, if form is in use and submitted
         if _lockdown_form:
             if request.method == 'POST':
                 form = _lockdown_form(request.POST)

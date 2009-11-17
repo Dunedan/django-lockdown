@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-#from lockdown.decorators import lock
+from lockdown.decorators import lockdown
 
 def index(request):
     return HttpResponse('The index view.')
@@ -8,6 +8,6 @@ def index(request):
 def aview(request):
     return HttpResponse('A view.')
 
-#@protect
-#def lockedview(request):
-#    return HttpResponse('A locked view.')
+@lockdown
+def lockedview(request):
+    return HttpResponse('A locked view.')
