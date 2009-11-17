@@ -3,7 +3,8 @@ django-lockdown
 ===============
 
 A simple Django reusable application for locking down an entire site
-(or particular views) with a preview password.
+(or particular views), with customizable preview authorization
+(defaults to single password).
 
 Installation
 ============
@@ -18,22 +19,22 @@ or get the `in-development version`_::
 
 .. _in-development version: http://bitbucket.org/carljm/django-lockdown/get/tip.gz#egg=django_lockdown-dev
 
-To use django-lockdown in your Django project:
+To use ``django-lockdown`` in your Django project:
 
     1. Add ``'lockdown'`` to your ``INSTALLED_APPS`` setting.
 
-    2. If you want to enable admin preview of locked-down sites or
-    views, set the `LOCKDOWN_PASSWORD`_ setting to a plain-text
-    password.
+    2. To enable admin preview of locked-down sites or views with a
+       single password, set the `LOCKDOWN_PASSWORD`_ setting to a
+       plain-text password.
 
     3. To lock down the entire site, add
-    ``'lockdown.middleware.LockdownMiddleware'`` to your
-    ``INSTALLED_APPS`` setting. Optionally you may also add URL
-    regular expressions to the ``LOCKDOWN_URL_EXCEPTIONS`` setting.
+       ``'lockdown.middleware.LockdownMiddleware'`` to your
+       ``INSTALLED_APPS`` setting. Optionally you may also add URL
+       regular expressions to the `LOCKDOWN_URL_EXCEPTIONS`_ setting.
 
     4. To protect only certain views, apply the
-    ``lockdown.decorators.lockdown`` decorator to the views you want
-    to protect.
+       ``lockdown.decorators.lockdown`` decorator to the views you
+       want to protect.
 
 For more advanced customization of admin preview authorization, see
 the `LOCKDOWN_FORM`_ setting.
@@ -91,3 +92,4 @@ password entry form.
 
 If you override this template, the lockdown preview form is available
 in the template context as ``form``.
+
