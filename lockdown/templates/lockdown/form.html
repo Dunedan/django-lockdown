@@ -1,0 +1,27 @@
+{% extends "lockdown/base.html" %}
+
+{% block title %}Coming soon...{% endblock %}
+
+{% block content %}
+<div id="lockdown">
+  <h2>Coming soon...</h2>
+
+  <p>This is not yet available to the public.</p>
+
+  {% if form %}
+
+  <form action="" method="post">
+    <div>
+      {% for field in form %}
+        {{ field.errors }}
+        {{ field.label_tag }}: {{ field }}
+      {% endfor %}
+    </div>
+    <input type="submit" value="Preview">
+  </form>
+
+  {% endif %}
+
+</div>
+{% endblock %}
+

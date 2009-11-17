@@ -1,0 +1,7 @@
+include AUTHORS.txt
+include CHANGES.txt
+include LICENSE.txt
+include MANIFEST.in
+include README.txt
+include HGREV
+recursive-include lockdown/templates *.html
