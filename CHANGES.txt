@@ -1,8 +1,16 @@
 CHANGES
 =======
 
-0.1 (2009-11-16)
+tip (unreleased)
 ----------------
 
-- initial release
+0.1.1 (2009.11.24)
+------------------
+
+- Fix setup.py so ``tests`` package is not installed.
+
+0.1 (2009.11.16)
+----------------
+
+- Initial release.
 

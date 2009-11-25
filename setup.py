@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import subprocess
 import os.path
 
@@ -25,13 +25,13 @@ long_description = (open('README.txt').read() +
                     open('TODO.txt').read())
 setup(
     name='django-lockdown',
-    version='0.2.0dev%s' % hgrev,
+    version='0.1.1',
     description='Site-wide or per-view lockdown with customizable preview authorization',
     long_description=long_description,
     author='Carl Meyer',
     author_email='carl@dirtcircle.com',
     url='http://bitbucket.org/carljm/django-lockdown/',
-    packages=find_packages(),
+    packages=['lockdown'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
