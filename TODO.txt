@@ -4,6 +4,3 @@ TODO
 * Once Django 1.2 ships with signed cookies (hopefully), replace
   contrib.sessions dependency with a signed cookie.
 
-* Make session authorization expire if settings are changed (password,
-  custom form)
-

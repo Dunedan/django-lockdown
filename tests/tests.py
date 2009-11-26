@@ -1,21 +1,25 @@
 from django.test import TestCase, Client
 from django.conf import settings as django_settings
 
-from lockdown import settings
-from lockdown.middleware import _compile_url_exceptions, _get_lockdown_form
+from lockdown import settings, middleware
+
 
 class DecoratorTests(TestCase):
     _url = '/locked/view/'
     _contents = 'A locked view.'
     
     def setUp(self):
-        self._old_pw = settings.PASSWORD
-        settings.PASSWORD = 'letmein'
-        _get_lockdown_form()
+        self._old_pw = settings.PASSWORDS
+        settings.PASSWORDS = 'letmein'
+        self._old_form = settings.FORM
+        settings.FORM = 'lockdown.forms.LockdownForm'
+        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
         self.client = Client()
 
     def tearDown(self):
-        settings.PASSWORD = self._old_pw
+        settings.PASSWORDS = self._old_pw
+        settings.FORM = self._old_form
+        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
 
     def test_lockdown_template_used(self):
         response = self.client.get(self._url)
@@ -35,13 +39,13 @@ class DecoratorTests(TestCase):
     def test_url_exceptions(self):
         _old_url_exceptions = settings.URL_EXCEPTIONS
         settings.URL_EXCEPTIONS = (r'/view/$',)
-        _compile_url_exceptions()
+        middleware._url_exceptions = middleware._compile_url_exceptions()
 
         response = self.client.get(self._url)
         self.assertContains(response, self._contents)
 
         settings.URL_EXCEPTIONS = _old_url_exceptions
-        _compile_url_exceptions()
+        middleware._url_exceptions = middleware._compile_url_exceptions()
         
     def test_submit_password(self):
         response = self.client.post(self._url, {'password': 'letmein'},
@@ -55,14 +59,14 @@ class DecoratorTests(TestCase):
     def test_custom_form(self):
         _old_form = settings.FORM
         settings.FORM = 'tests.forms.CustomLockdownForm'
-        _get_lockdown_form()
+        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
         
         response = self.client.post(self._url, {'answer': '42'},
                                     follow=True)
         self.assertContains(response, self._contents)
                                     
         settings.FORM = _old_form
-        _get_lockdown_form()
+        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
     
 
 class MiddlewareTests(DecoratorTests):
@@ -71,7 +75,9 @@ class MiddlewareTests(DecoratorTests):
     
     def setUp(self):
         self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
-        django_settings.MIDDLEWARE_CLASSES += ('lockdown.middleware.LockdownMiddleware',)
+        django_settings.MIDDLEWARE_CLASSES += (
+            'lockdown.middleware.LockdownMiddleware',
+        )
         super(MiddlewareTests, self).setUp()
 
     def tearDown(self):
