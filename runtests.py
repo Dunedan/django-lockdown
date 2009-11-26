@@ -12,7 +12,12 @@ def runtests(*test_args):
     sys.path.insert(0, parent)
     settings.configure(
         DATABASE_ENGINE='sqlite3',
-        INSTALLED_APPS = ('django.contrib.sessions', 'lockdown'),
+        INSTALLED_APPS = (
+            'django.contrib.sessions',
+            'django.contrib.contenttypes',
+            'django.contrib.auth',
+            'lockdown'
+        ),
         ROOT_URLCONF='lockdown.tests.urls',
     )
     from django.test.utils import get_runner
