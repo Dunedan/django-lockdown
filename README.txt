@@ -3,8 +3,7 @@ django-lockdown
 ===============
 
 A simple Django reusable application for locking down an entire site
-(or particular views), with customizable preview authorization
-(defaults to single password).
+(or particular views), with customizable date ranges and preview authorization.
 
 Installation
 ============
@@ -63,6 +62,12 @@ The decorator accepts four arguments:
   referenced by ``settings.LOCKDOWN_FORM``. Note that this must be an actual
   form class, not a module reference like the setting. 
 
+``until_date``
+  The date to use rather than the date provided by ``settings.LOCKDOWN_UNTIL``.
+
+``after_date``
+  The date to use rather than the date provided by ``settings.LOCKDOWN_AFTER``.
+
 ``logout_key``
   A preview logout key to use, rather than the one provided by
   ``settings.LOCKDOWN_LOGOUT_KEY``.
@@ -109,6 +114,23 @@ locked. For example::
         r'^/about/$',   # unlock /about/
         r'\.json$',   # unlock JSON API
     )
+
+LOCKDOWN_UNTIL
+--------------
+
+Used to lock the site down up until a certain date. Use a ``datetime.datetime``
+object.
+
+If neither ``LOCKDOWN_UNTIL`` or ``LOCKDOWN_AFTER`` is provided (i.e. the
+default), the site or views will always be locked.
+
+LOCKDOWN_AFTER
+--------------
+
+Used to lock the site down after a certain date. Use a ``datetime.datetime``
+object.
+
+See also: `LOCKDOWN_UNTIL`_.
 
 LOCKDOWN_LOGOUT_KEY
 -------------------

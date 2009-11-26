@@ -20,9 +20,9 @@ try:
 except IOError:
     hgrev = ''
 
-long_description = (open('README.txt').read() +
-                    open('CHANGES.txt').read() +
-                    open('TODO.txt').read())
+long_description = '\n'.join([open('README.txt').read(),
+                              open('CHANGES.txt').read(),
+                              open('TODO.txt').read()])
 setup(
     name='django-lockdown',
     version='0.1.1.post%s' % hgrev,

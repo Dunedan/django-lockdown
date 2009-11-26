@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from django.conf import settings as django_settings, global_settings
@@ -89,6 +90,63 @@ class BaseTests(LockdownTestCase):
             settings.FORM = _old_form
             middleware._default_form = middleware.get_lockdown_form(
                                                                 settings.FORM)
+
+    def test_locked_until(self):
+        _old_until_date = settings.UNTIL_DATE
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+
+        try:
+            settings.UNTIL_DATE = tomorrow
+            response = self.client.get(self.locked_url)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
+
+            settings.UNTIL_DATE = yesterday
+            response = self.client.get(self.locked_url)
+            self.assertContains(response, self.locked_contents)
+        finally:
+            settings.UNTIL_DATE = _old_until_date
+
+    def test_locked_after(self):
+        _old_after_date = settings.AFTER_DATE
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+
+        try:
+            settings.AFTER_DATE = yesterday
+            response = self.client.get(self.locked_url)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
+
+            settings.AFTER_DATE = tomorrow
+            response = self.client.get(self.locked_url)
+            self.assertContains(response, self.locked_contents)
+        finally:
+            settings.AFTER_DATE = _old_after_date
+
+    def test_locked_until_and_after(self):
+        _old_until_date = settings.UNTIL_DATE
+        _old_after_date = settings.AFTER_DATE
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+
+        try:
+            settings.UNTIL_DATE = yesterday
+            settings.AFTER_DATE = yesterday
+            response = self.client.get(self.locked_url)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
+
+            settings.UNTIL_DATE = tomorrow
+            settings.AFTER_DATE = tomorrow
+            response = self.client.get(self.locked_url)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
+
+            settings.UNTIL_DATE = yesterday
+            settings.AFTER_DATE = tomorrow
+            response = self.client.get(self.locked_url)
+            self.assertContains(response, self.locked_contents)
+        finally:
+            settings.UNTIL_DATE = _old_until_date
+            settings.AFTER_DATE = _old_after_date
 
 
 class DecoratorTests(BaseTests):

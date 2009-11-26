@@ -1,3 +1,4 @@
+import datetime
 import re
 
 from django.http import HttpResponseRedirect
@@ -38,14 +39,17 @@ _default_form = get_lockdown_form(settings.FORM)
 
 class LockdownMiddleware(object):
 
-    def __init__(self, form=None, logout_key=None, session_key=None,
-                 url_exceptions=None, **form_kwargs):
+    def __init__(self, form=None, until_date=None, after_date=None,
+                 logout_key=None, session_key=None, url_exceptions=None,
+                 **form_kwargs):
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
         if session_key is None:
             session_key = settings.SESSION_KEY
         self.form = form
         self.form_kwargs = form_kwargs
+        self.until_date = until_date
+        self.after_date = after_date
         self.logout_key = logout_key
         self.session_key = session_key
         self.url_exceptions = url_exceptions
@@ -64,6 +68,24 @@ class LockdownMiddleware(object):
             url_exceptions = self.url_exceptions
         for pattern in url_exceptions:
             if pattern.search(request.path):
+                return None
+
+        # Don't lock down if outside of the lockdown dates.
+        if self.until_date is None:
+            until_date = settings.UNTIL_DATE
+        else:
+            until_date = self.until_date
+        if self.after_date is None:
+            after_date = settings.AFTER_DATE
+        else:
+            after_date = self.after_date
+        if until_date or after_date:
+            locked_date = False
+            if until_date and datetime.datetime.now() < until_date:
+                locked_date = True
+            if after_date and datetime.datetime.now() > after_date:
+                locked_date = True
+            if not locked_date:
                 return None
 
         form_data = request.method == 'POST' and request.POST or None
@@ -103,7 +125,7 @@ class LockdownMiddleware(object):
             session[self.session_key] = token
             return self.redirect(request)
 
-        page_data = {}
+        page_data = {'until_date': until_date, 'after_date': after_date}
         if not hasattr(form, 'show_form') or form.show_form():
             page_data['form'] = form
 
