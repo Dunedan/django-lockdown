@@ -9,13 +9,13 @@ class DecoratorTests(TestCase):
     _contents = 'A locked view.'
     
     def setUp(self):
-        self._old_pw = settings.LOCKDOWN_PASSWORD
-        settings.LOCKDOWN_PASSWORD = 'letmein'
+        self._old_pw = settings.PASSWORD
+        settings.PASSWORD = 'letmein'
         _get_lockdown_form()
         self.client = Client()
 
     def tearDown(self):
-        settings.LOCKDOWN_PASSWORD = self._old_pw
+        settings.PASSWORD = self._old_pw
 
     def test_lockdown_template_used(self):
         response = self.client.get(self._url)
@@ -33,14 +33,14 @@ class DecoratorTests(TestCase):
         self.failUnless('password' in form.fields)
 
     def test_url_exceptions(self):
-        _old_url_exceptions = settings.LOCKDOWN_URL_EXCEPTIONS
-        settings.LOCKDOWN_URL_EXCEPTIONS = (r'/view/$',)
+        _old_url_exceptions = settings.URL_EXCEPTIONS
+        settings.URL_EXCEPTIONS = (r'/view/$',)
         _compile_url_exceptions()
 
         response = self.client.get(self._url)
         self.assertContains(response, self._contents)
 
-        settings.LOCKDOWN_URL_EXCEPTIONS = _old_url_exceptions
+        settings.URL_EXCEPTIONS = _old_url_exceptions
         _compile_url_exceptions()
         
     def test_submit_password(self):
@@ -53,15 +53,15 @@ class DecoratorTests(TestCase):
         self.assertContains(response, 'Incorrect password.')
 
     def test_custom_form(self):
-        _old_form = settings.LOCKDOWN_FORM
-        settings.LOCKDOWN_FORM = 'tests.forms.CustomLockdownForm'
+        _old_form = settings.FORM
+        settings.FORM = 'tests.forms.CustomLockdownForm'
         _get_lockdown_form()
         
         response = self.client.post(self._url, {'answer': '42'},
                                     follow=True)
         self.assertContains(response, self._contents)
                                     
-        settings.LOCKDOWN_FORM = _old_form
+        settings.FORM = _old_form
         _get_lockdown_form()
     
 

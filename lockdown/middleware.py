@@ -15,16 +15,16 @@ _compiled_url_exceptions = ()
 def _compile_url_exceptions():
     global _compiled_url_exceptions
     _compiled_url_exceptions = [re.compile(p)
-                                for p in settings.LOCKDOWN_URL_EXCEPTIONS]
+                                for p in settings.URL_EXCEPTIONS]
 _compile_url_exceptions()
 
 
 _lockdown_form = None
 def _get_lockdown_form():
     global _lockdown_form
-    path = settings.LOCKDOWN_FORM
+    path = settings.FORM
     if path is None:
-        if settings.LOCKDOWN_PASSWORD:
+        if settings.PASSWORD:
             path = 'lockdown.forms.LockdownForm'
         else:
             return None
@@ -56,7 +56,7 @@ class LockdownMiddleware(object):
                                        'sessions framework')
 
         # Check if the user is already authorized for previewing.
-        if session.get(settings.LOCKDOWN_SESSION_KEY, False):
+        if session.get(settings.SESSION_KEY, False):
             return None
 
         # check if the URL matches an exception pattern
@@ -69,7 +69,7 @@ class LockdownMiddleware(object):
             if request.method == 'POST':
                 form = _lockdown_form(request.POST)
                 if form.is_valid():
-                    session[settings.LOCKDOWN_SESSION_KEY] = True
+                    session[settings.SESSION_KEY] = True
                     return HttpResponseRedirect(request.path)
             else:
                 form = _lockdown_form()
