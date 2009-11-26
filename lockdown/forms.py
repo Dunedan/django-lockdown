@@ -78,6 +78,28 @@ class LockdownForm(BasePreviewForm):
 
 
 class AuthForm(AuthenticationForm, BasePreviewForm):
+    def __init__(self, staff_only=None, superusers_only=None, *args,
+                 **kwargs):
+        from django.conf import settings as django_settings
+        super(AuthForm, self).__init__(*args, **kwargs)
+        if staff_only is None:
+            staff_only = getattr(django_settings,
+                                 'LOCKDOWN_AUTHFORM_STAFF_ONLY', True)
+        if superusers_only is None:
+            superusers_only = getattr(django_settings,
+                                      'LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY',
+                                      False)
+        self.staff_only = staff_only
+        self.superusers_only = superusers_only
+
+    def clean(self):
+        cleaned_data = super(AuthForm, self).clean()
+        if self.staff_only and not self.get_user().is_staff:
+            raise forms.ValidationError('Sorry, only staff are allowed.')
+        if self.superusers_only and not self.get_user().is_superuser:
+            raise forms.ValidationError('Sorry, only superusers are allowed.')
+        return cleaned_data
+
     def generate_token(self):
         """
         Save the password as the authentication token.
