@@ -51,7 +51,7 @@ class LockdownMiddleware(object):
             if pattern.search(request.path):
                 return None
 
-        form_data = request.method == 'POST' and request.POST
+        form_data = request.method == 'POST' and request.POST or None
         form = _lockdown_form(data=form_data)
 
         # Don't lock down if the user is already authorized for previewing.
