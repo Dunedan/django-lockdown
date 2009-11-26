@@ -7,6 +7,6 @@ class LockdownForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(render_value=False))
 
     def clean_password(self):
-        if self.cleaned_data['password'] in settings.PASSWORD:
+        if self.cleaned_data['password'] in settings.PASSWORDS:
             return self.cleaned_data['password']
         raise forms.ValidationError('Incorrect password.')

@@ -42,16 +42,16 @@ the `LOCKDOWN_FORM`_ setting.
 Settings
 ========
 
-LOCKDOWN_PASSWORD
------------------
+LOCKDOWN_PASSWORDS
+------------------
 
-The plain-text password required to preview a site or views protected
-by django-lockdown::
+One or more plain-text passwords which allow the previewing of the site or
+views protected by django-lockdown::
 
-    LOCKDOWN_PASSWORD = 'letmein'
+    LOCKDOWN_PASSWORDS = ('letmein', 'beta')
 
-If neither this setting nor `LOCKDOWN_FORM`_ is provided, there will
-be no admin preview for locked-down pages.
+If this setting is not provided, there will be no admin preview for locked-down
+pages.
 
 LOCKDOWN_URL_EXCEPTIONS
 -----------------------
