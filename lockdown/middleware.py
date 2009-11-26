@@ -8,6 +8,7 @@ from django.utils.importlib import import_module
 
 from lockdown import settings
 
+
 # an extra layer of indirection here so the tests can force this to be
 # recalculated
 _compiled_url_exceptions = ()
@@ -16,6 +17,7 @@ def _compile_url_exceptions():
     _compiled_url_exceptions = [re.compile(p)
                                 for p in settings.LOCKDOWN_URL_EXCEPTIONS]
 _compile_url_exceptions()
+
 
 _lockdown_form = None
 def _get_lockdown_form():
@@ -27,7 +29,7 @@ def _get_lockdown_form():
         else:
             return None
     i = path.rfind('.')
-    module, attr = path[:i], path[i+1:]
+    module, attr = path[:i], path[i + 1:]
     try:
         mod = import_module(module)
     except ImportError, e:
@@ -44,14 +46,18 @@ def _get_lockdown_form():
     _lockdown_form = form
 _get_lockdown_form()
 
+
 class LockdownMiddleware(object):
     def process_request(self, request):
-        # check if they are already authorized for preview
         try:
-            if request.session.get(settings.LOCKDOWN_SESSION_KEY, False):
-                return None
+            session = request.session
         except AttributeError:
-            raise ImproperlyConfigured('django-lockdown requires the Django sessions framework')
+            raise ImproperlyConfigured('django-lockdown requires the Django '
+                                       'sessions framework')
+
+        # Check if the user is already authorized for previewing.
+        if session.get(settings.LOCKDOWN_SESSION_KEY, False):
+            return None
 
         # check if the URL matches an exception pattern
         for pattern in _compiled_url_exceptions:
@@ -63,7 +69,7 @@ class LockdownMiddleware(object):
             if request.method == 'POST':
                 form = _lockdown_form(request.POST)
                 if form.is_valid():
-                    request.session[settings.LOCKDOWN_SESSION_KEY] = True
+                    session[settings.LOCKDOWN_SESSION_KEY] = True
                     return HttpResponseRedirect(request.path)
             else:
                 form = _lockdown_form()
