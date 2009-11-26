@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 
 from django.conf import settings
 
@@ -12,11 +13,11 @@ def runtests(*test_args):
     sys.path.insert(0, parent)
     settings.configure(
         DATABASE_ENGINE='sqlite3',
-        INSTALLED_APPS = (
+        INSTALLED_APPS=(
             'django.contrib.sessions',
             'django.contrib.contenttypes',
             'django.contrib.auth',
-            'lockdown'
+            'lockdown',
         ),
         ROOT_URLCONF='lockdown.tests.urls',
     )

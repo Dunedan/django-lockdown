@@ -38,10 +38,10 @@ class BaseTests(LockdownTestCase):
     """
     Base tests for lockdown functionality (whether via a decorator or
     middleware).
-    
+
     Subclasses should provide ``locked_url`` and ``locked_contents``
-    attributes. 
-    
+    attributes.
+
     """
 
     def test_lockdown_template_used(self):
@@ -120,6 +120,7 @@ class MiddlewareTests(BaseTests):
 
 
 class AuthFormTests(LockdownTestCase):
+
     def test_using_form(self):
         url = '/auth/user/locked/view/'
         response = self.client.get(url)
@@ -139,7 +140,7 @@ class AuthFormTests(LockdownTestCase):
         # Skip this test if auth isn't an installed app.
         if 'django.contrib.auth' not in django_settings.INSTALLED_APPS:
             return
-        
+
         url = '/auth/user/locked/view/'
         self.add_user()
 
@@ -157,7 +158,7 @@ class AuthFormTests(LockdownTestCase):
         # Skip this test if auth isn't an installed app.
         if 'django.contrib.auth' not in django_settings.INSTALLED_APPS:
             return
-        
+
         url = '/auth/staff/locked/view/'
         self.add_user(username='user')
         self.add_user(username='staff', is_staff=True)
@@ -181,7 +182,7 @@ class AuthFormTests(LockdownTestCase):
         # Skip this test if auth isn't an installed app.
         if 'django.contrib.auth' not in django_settings.INSTALLED_APPS:
             return
-        
+
         url = '/auth/superuser/locked/view/'
         self.add_user(username='staff', is_staff=True)
         self.add_user(username='superuser', is_staff=True, is_superuser=True)

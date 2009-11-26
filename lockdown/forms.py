@@ -6,11 +6,12 @@ from lockdown import settings
 
 
 class BasePreviewForm(forms.Form):
+
     def generate_token(self):
         """
         Generate a token which can be used to authenticate the user for future
         requests.
-        
+
         """
         return True
 
@@ -18,14 +19,14 @@ class BasePreviewForm(forms.Form):
         """
         Authenticate the user from a stored token value. If the ``token_value``
         is ``None``, then no token was retrieved.
-         
+
         """
         return token_value is True
 
     def show_form(self):
         """
         Determine whether or not the form should be shown on locked pages.
-        
+
         """
         return True
 
@@ -42,7 +43,7 @@ class LockdownForm(BasePreviewForm):
     def clean_password(self):
         """
         Check that the password is valid.
-        
+
         """
         value = self.cleaned_data.get('password')
         if not value in self.valid_passwords:
@@ -52,32 +53,33 @@ class LockdownForm(BasePreviewForm):
     def generate_token(self):
         """
         Save the password as the authentication token.
-        
+
         It's acceptable to store the password raw, as it is stored server-side
         in the user's session.
-        
+
         """
         return self.cleaned_data['password']
 
     def authenticate(self, token_value):
         """
         Check that the password is valid.
-        
+
         This allows for revoking of a user's preview rights by changing the
         valid passwords.
-        
+
         """
         return token_value in self.valid_passwords
 
     def show_form(self):
         """
         Show the form if there are any valid passwords.
-         
+
         """
         return bool(self.valid_passwords)
 
 
 class AuthForm(AuthenticationForm, BasePreviewForm):
+
     def __init__(self, staff_only=None, superusers_only=None, *args,
                  **kwargs):
         from django.conf import settings as django_settings
@@ -104,10 +106,10 @@ class AuthForm(AuthenticationForm, BasePreviewForm):
     def generate_token(self):
         """
         Save the password as the authentication token.
-        
+
         It's acceptable to store the password raw, as it is stored server-side
         in the user's session.
-        
+
         """
         user = self.get_user()
         return '%s:%s' % (user.backend, user.pk)
@@ -115,10 +117,10 @@ class AuthForm(AuthenticationForm, BasePreviewForm):
     def authenticate(self, token_value):
         """
         Check that the password is valid.
-        
+
         This allows for revoking of a user's preview rights by changing the
         valid passwords.
-        
+
         """
         try:
             backend_path, user_id = token_value.split(':', 1)

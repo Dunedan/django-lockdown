@@ -37,6 +37,7 @@ _default_form = get_lockdown_form(settings.FORM)
 
 
 class LockdownMiddleware(object):
+
     def __init__(self, form=None, logout_key=None, session_key=None,
                  url_exceptions=None, **form_kwargs):
         if logout_key is None:

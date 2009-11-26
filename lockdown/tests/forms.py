@@ -1,5 +1,6 @@
 from django import forms
 
+
 class CustomLockdownForm(forms.Form):
     answer = forms.IntegerField()
 
