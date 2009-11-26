@@ -119,14 +119,26 @@ user from the preview.
 LOCKDOWN_FORM
 -------------
 
-By default, django-lockdown allows admin preview by entering a preset
-plain-text `LOCKDOWN_PASSWORD`_. To set up more advanced methods of
-authenticating access to locked-down pages, set ``LOCKDOWN_FORM`` to
-the Python dotted path to a Django ``Form`` subclass. This form will
-be displayed on the lockout page. If the form validates when
-submitted, the user will be allowed access to locked pages::
+The default lockdown form allows admin preview by entering a preset
+plain-text password (checked, by default, against the `LOCKDOWN_PASSWORDS`_
+setting). To set up more advanced methods of authenticating access to
+locked-down pages, set ``LOCKDOWN_FORM`` to the Python dotted path to a Django
+``Form`` subclass. This form will be displayed on the lockout page. If the form
+validates when submitted, the user will be allowed access to locked pages::
 
     LOCKDOWN_FORM = 'path.to.my.CustomLockdownForm'
+    
+A form for authenticating against ``django.contrib.auth`` users is provided
+with django-lockdown (use ``LOCKDOWN_FORM = 'lockdown.forms.AuthForm'``). It
+has two keyword arguments which can be passed (in the ``lockdown`` decorator):
+
+``staff_only``
+  Only allow staff members to preview. Defaults to ``True`` (but the default
+  can be provided as a ``LOCKDOWN_AUTHFORM_STAFF_ONLY`` setting).
+
+``superusers_only``
+  Only allow superusers to preview. Defaults to ``False`` (but the default
+  can be provided as a ``LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY`` setting).
 
 LOCKDOWN_SESSION_KEY
 --------------------
