@@ -39,14 +39,10 @@ _default_form = get_lockdown_form(settings.FORM)
 class LockdownMiddleware(object):
     def __init__(self, form=None, logout_key=None, session_key=None,
                  url_exceptions=None, **form_kwargs):
-        if form is None:
-            form = _default_form
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
         if session_key is None:
             session_key = settings.SESSION_KEY
-        if url_exceptions is None:
-            url_exceptions = _default_url_exceptions
         self.form = form
         self.form_kwargs = form_kwargs
         self.logout_key = logout_key
@@ -61,12 +57,20 @@ class LockdownMiddleware(object):
                                        'sessions framework')
 
         # Don't lock down if the URL matches an exception pattern.
-        for pattern in self.url_exceptions:
+        if self.url_exceptions is None:
+            url_exceptions = _default_url_exceptions
+        else:
+            url_exceptions = self.url_exceptions
+        for pattern in url_exceptions:
             if pattern.search(request.path):
                 return None
 
         form_data = request.method == 'POST' and request.POST or None
-        form = self.form(data=form_data, **self.form_kwargs)
+        if self.form is None:
+            form_class = _default_form
+        else:
+            form_class = self.form
+        form = form_class(data=form_data, **self.form_kwargs)
 
         authorized = False
         token = session.get(self.session_key)

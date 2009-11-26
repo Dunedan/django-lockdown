@@ -7,10 +7,10 @@ from lockdown import settings, middleware
 class DecoratorTests(TestCase):
     _url = '/locked/view/'
     _contents = 'A locked view.'
-    
+
     def setUp(self):
         self._old_pw = settings.PASSWORDS
-        settings.PASSWORDS = 'letmein'
+        settings.PASSWORDS = ('letmein',)
         self._old_form = settings.FORM
         settings.FORM = 'lockdown.forms.LockdownForm'
         middleware._default_form = middleware.get_lockdown_form(settings.FORM)
@@ -42,13 +42,14 @@ class DecoratorTests(TestCase):
         middleware._default_url_exceptions = \
                 middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
 
-        response = self.client.get(self._url)
-        self.assertContains(response, self._contents)
+        try:
+            response = self.client.get(self._url)
+            self.assertContains(response, self._contents)
+        finally:
+            settings.URL_EXCEPTIONS = _old_url_exceptions
+            middleware._default_url_exceptions = \
+                    middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
 
-        settings.URL_EXCEPTIONS = _old_url_exceptions
-        middleware._default_url_exceptions = \
-                middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
-        
     def test_submit_password(self):
         response = self.client.post(self._url, {'password': 'letmein'},
                                     follow=True)
@@ -62,19 +63,21 @@ class DecoratorTests(TestCase):
         _old_form = settings.FORM
         settings.FORM = 'tests.forms.CustomLockdownForm'
         middleware._default_form = middleware.get_lockdown_form(settings.FORM)
-        
-        response = self.client.post(self._url, {'answer': '42'},
-                                    follow=True)
-        self.assertContains(response, self._contents)
-                                    
-        settings.FORM = _old_form
-        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
-    
+
+        try:
+            response = self.client.post(self._url, {'answer': '42'},
+                                        follow=True)
+            self.assertContains(response, self._contents)
+        finally:
+            settings.FORM = _old_form
+            middleware._default_form = middleware.get_lockdown_form(
+                                                                settings.FORM)
+
 
 class MiddlewareTests(DecoratorTests):
     _url = '/a/view/'
     _contents = 'A view.'
-    
+
     def setUp(self):
         self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
         django_settings.MIDDLEWARE_CLASSES += (
