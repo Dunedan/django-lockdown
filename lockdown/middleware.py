@@ -68,7 +68,7 @@ class LockdownMiddleware(object):
         # Don't lock down if the user is already authorized for previewing.
         token = session.get(self.session_key)
         if hasattr(form, 'authenticate'):
-            if self.form.authenticate(token):
+            if form.authenticate(token):
                 return None
         elif token is True:
             return None
