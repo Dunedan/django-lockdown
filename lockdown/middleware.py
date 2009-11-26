@@ -70,6 +70,9 @@ class LockdownMiddleware(object):
             session[settings.SESSION_KEY] = token
             return HttpResponseRedirect(request.path)
 
-        return render_to_response('lockdown/form.html',
-                                  {'form': form},
+        page_data = {}
+        if not hasattr(form, 'show_form') or form.show_form():
+            page_data['form'] = form
+
+        return render_to_response('lockdown/form.html', page_data,
                                   context_instance=RequestContext(request))

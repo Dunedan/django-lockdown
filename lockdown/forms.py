@@ -20,6 +20,13 @@ class BaseLockdownForm(forms.Form):
         """
         return token_value is True
 
+    def show_form(self):
+        """
+        Determine whether or not the form should be shown on locked pages.
+        
+        """
+        return True
+
 
 class LockdownForm(BaseLockdownForm):
     password = forms.CharField(widget=forms.PasswordInput(render_value=False))
@@ -53,3 +60,11 @@ class LockdownForm(BaseLockdownForm):
         
         """
         return token_value in settings.PASSWORDS
+
+    def show_form(self):
+        """
+        Show the form if there are any passwords in the LOCKDOWN_PASSWORDS
+        setting.
+         
+        """
+        return bool(settings.PASSWORDS)
