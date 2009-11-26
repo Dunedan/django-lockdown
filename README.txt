@@ -23,21 +23,62 @@ To use ``django-lockdown`` in your Django project:
 
     1. Add ``'lockdown'`` to your ``INSTALLED_APPS`` setting.
 
-    2. To enable admin preview of locked-down sites or views with a
-       single password, set the `LOCKDOWN_PASSWORD`_ setting to a
-       plain-text password.
+    2. To enable admin preview of locked-down sites or views with
+       passwords, set the `LOCKDOWN_PASSWORDS`_ setting to a tuple of one or
+       more plain-text passwords.
 
-    3. To lock down the entire site, add
-       ``'lockdown.middleware.LockdownMiddleware'`` to your
-       ``INSTALLED_APPS`` setting. Optionally you may also add URL
-       regular expressions to the `LOCKDOWN_URL_EXCEPTIONS`_ setting.
-
-    4. To protect only certain views, apply the
-       ``lockdown.decorators.lockdown`` decorator to the views you
-       want to protect.
-
+    3. Protect the entire site by using middleware, or protect individual views
+       by applying a decorator to them.
+       
 For more advanced customization of admin preview authorization, see
 the `LOCKDOWN_FORM`_ setting.
+
+Using the middleware
+--------------------
+
+To lock down the entire site, add the lockdown middleware to your
+``MIDDLEWARE_CLASSES`` setting::
+
+    MIDDLEWARE_CLASSES = (
+        # ...
+        'lockdown.middleware.LockdownMiddleware',
+    )
+    
+Optionally, you may also add URL regular expressions to a
+`LOCKDOWN_URL_EXCEPTIONS`_ setting.
+
+Using the decorator
+-------------------
+
+Apply the decorator to individual views you want to protect. For example::
+
+    @lockdown()
+    def secret_page(request):
+        # ...
+
+The decorator accepts three arguments:
+
+``form``
+  The form to use for providing an admin preview, rather than the form
+  referenced by ``settings.LOCKDOWN_FORM``. Note that this must be an actual
+  form class, not a module reference like the setting. 
+
+``session_key``
+  The session key to use, rather than the one provided by
+  ``settings.LOCKDOWN_SESSION_KEY``.
+ 
+``url_exceptions``
+  A list of regular expressions for which matching urls can bypass the
+  lockdown (rather than using those defined in
+  ``settings.LOCKDOWN_URL_EXCEPTIONS``).
+
+Any further keyword arguments are passed to the admin preview form. The default
+form accepts one argument::
+
+``passwords``
+  A tuple of passwords to use, rather than the ones provided by
+  ``settings.LOCKDOWN_PASSWORDS``.
+
 
 Settings
 ========
@@ -50,18 +91,20 @@ views protected by django-lockdown::
 
     LOCKDOWN_PASSWORDS = ('letmein', 'beta')
 
-If this setting is not provided, there will be no admin preview for locked-down
-pages.
+If this setting is not provided (and the default ``LOCKDOWN_FORM`` is being
+used), there will be no admin preview for locked-down pages.
 
 LOCKDOWN_URL_EXCEPTIONS
 -----------------------
 
 Optional: a list/tuple of regular expressions to be matched against
 incoming URLs. If a URL matches a regular expression in this list, it
-will not be locked::
+will not be locked. For example::
 
-    LOCKDOWN_URL_EXCEPTIONS = (r'^/about/$',  # unlock /about/
-                               r'\.json$')    # unlock JSON API
+    LOCKDOWN_URL_EXCEPTIONS = (
+        r'^/about/$',   # unlock /about/
+        r'\.json$',   # unlock JSON API
+    )
 
 LOCKDOWN_FORM
 -------------
@@ -83,6 +126,7 @@ be authorized for the remainder of their browsing session (using
 Django's built-in session support). ``LOCKDOWN_SESSION_KEY`` defines
 the session key used; the default is ``'lockdown-allow'``.
 
+
 Templates
 =========
 
@@ -92,4 +136,3 @@ password entry form.
 
 If you override this template, the lockdown preview form is available
 in the template context as ``form``.
-
