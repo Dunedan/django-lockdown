@@ -1,9 +1,11 @@
 from django import forms
+from django.contrib import auth
+from django.contrib.auth.forms import AuthenticationForm
 
 from lockdown import settings
 
 
-class BaseLockdownForm(forms.Form):
+class BasePreviewForm(forms.Form):
     def generate_token(self):
         """
         Generate a token which can be used to authenticate the user for future
@@ -28,7 +30,7 @@ class BaseLockdownForm(forms.Form):
         return True
 
 
-class LockdownForm(BaseLockdownForm):
+class LockdownForm(BasePreviewForm):
     password = forms.CharField(widget=forms.PasswordInput(render_value=False))
 
     def __init__(self, passwords=None, *args, **kwargs):
@@ -73,3 +75,31 @@ class LockdownForm(BaseLockdownForm):
          
         """
         return bool(self.valid_passwords)
+
+
+class AuthForm(AuthenticationForm, BasePreviewForm):
+    def generate_token(self):
+        """
+        Save the password as the authentication token.
+        
+        It's acceptable to store the password raw, as it is stored server-side
+        in the user's session.
+        
+        """
+        user = self.get_user()
+        return '%s:%s' % (user.backend, user.pk)
+
+    def authenticate(self, token_value):
+        """
+        Check that the password is valid.
+        
+        This allows for revoking of a user's preview rights by changing the
+        valid passwords.
+        
+        """
+        try:
+            backend_path, user_id = token_value.split(':', 1)
+        except (ValueError, AttributeError):
+            return False
+        backend = auth.load_backend(backend_path)
+        return bool(backend.get_user(user_id))
