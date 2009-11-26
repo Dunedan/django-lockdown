@@ -31,13 +31,19 @@ class BaseLockdownForm(forms.Form):
 class LockdownForm(BaseLockdownForm):
     password = forms.CharField(widget=forms.PasswordInput(render_value=False))
 
+    def __init__(self, passwords=None, *args, **kwargs):
+        super(LockdownForm, self).__init__(*args, **kwargs)
+        if passwords is None:
+            passwords = settings.PASSWORDS
+        self.valid_passwords = passwords
+
     def clean_password(self):
         """
-        Check that the password appears the LOCKDOWN_PASSWORDS setting.
+        Check that the password is valid.
         
         """
         value = self.cleaned_data.get('password')
-        if not value in settings.PASSWORDS:
+        if not value in self.valid_passwords:
             raise forms.ValidationError('Incorrect password.')
         return value
 
@@ -53,18 +59,17 @@ class LockdownForm(BaseLockdownForm):
 
     def authenticate(self, token_value):
         """
-        Check that the password is still in the LOCKDOWN_PASSWORDS setting.
+        Check that the password is valid.
         
         This allows for revoking of a user's preview rights by changing the
-        passwords.
+        valid passwords.
         
         """
-        return token_value in settings.PASSWORDS
+        return token_value in self.valid_passwords
 
     def show_form(self):
         """
-        Show the form if there are any passwords in the LOCKDOWN_PASSWORDS
-        setting.
+        Show the form if there are any valid passwords.
          
         """
-        return bool(settings.PASSWORDS)
+        return bool(self.valid_passwords)

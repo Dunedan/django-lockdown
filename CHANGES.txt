@@ -7,6 +7,10 @@ tip (unreleased)
 - Allow multiple passwords (the passwords setting has changed from
   ``LOCKDOWN_PASSWORD`` to ``LOCKDOWN_PASSWORDS``
 
+- Decorator changed to a callable decorator (so settings can be overridden for
+  an individual decorator).
+
+
 0.1.1 (2009.11.24)
 ------------------
 

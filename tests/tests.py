@@ -13,13 +13,13 @@ class DecoratorTests(TestCase):
         settings.PASSWORDS = 'letmein'
         self._old_form = settings.FORM
         settings.FORM = 'lockdown.forms.LockdownForm'
-        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
+        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
         self.client = Client()
 
     def tearDown(self):
         settings.PASSWORDS = self._old_pw
         settings.FORM = self._old_form
-        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
+        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
 
     def test_lockdown_template_used(self):
         response = self.client.get(self._url)
@@ -39,13 +39,15 @@ class DecoratorTests(TestCase):
     def test_url_exceptions(self):
         _old_url_exceptions = settings.URL_EXCEPTIONS
         settings.URL_EXCEPTIONS = (r'/view/$',)
-        middleware._url_exceptions = middleware._compile_url_exceptions()
+        middleware._default_url_exceptions = \
+                middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
 
         response = self.client.get(self._url)
         self.assertContains(response, self._contents)
 
         settings.URL_EXCEPTIONS = _old_url_exceptions
-        middleware._url_exceptions = middleware._compile_url_exceptions()
+        middleware._default_url_exceptions = \
+                middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
         
     def test_submit_password(self):
         response = self.client.post(self._url, {'password': 'letmein'},
@@ -59,14 +61,14 @@ class DecoratorTests(TestCase):
     def test_custom_form(self):
         _old_form = settings.FORM
         settings.FORM = 'tests.forms.CustomLockdownForm'
-        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
+        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
         
         response = self.client.post(self._url, {'answer': '42'},
                                     follow=True)
         self.assertContains(response, self._contents)
                                     
         settings.FORM = _old_form
-        middleware._lockdown_form = middleware.get_lockdown_form(settings.FORM)
+        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
     
 
 class MiddlewareTests(DecoratorTests):

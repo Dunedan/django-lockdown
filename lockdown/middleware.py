@@ -9,12 +9,10 @@ from django.utils.importlib import import_module
 from lockdown import settings
 
 
-# An extra layer of indirection here so the tests can force this to be
-# recalculated.
-def _compile_url_exceptions():
-    return [re.compile(p) for p in settings.URL_EXCEPTIONS]
+def compile_url_exceptions(url_exceptions):
+    return [re.compile(p) for p in url_exceptions]
 
-_url_exceptions = _compile_url_exceptions()
+_default_url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
 
 
 def get_lockdown_form(form_path):
@@ -35,10 +33,23 @@ def get_lockdown_form(form_path):
                                    % (module, attr))
     return form
 
-_lockdown_form = get_lockdown_form(settings.FORM)
+_default_form = get_lockdown_form(settings.FORM)
 
 
 class LockdownMiddleware(object):
+    def __init__(self, form=None, session_key=None, url_exceptions=None,
+                 **form_kwargs):
+        if form is None:
+            form = _default_form
+        if session_key is None:
+            session_key = settings.SESSION_KEY
+        if url_exceptions is None:
+            url_exceptions = _default_url_exceptions
+        self.form = form
+        self.form_kwargs = form_kwargs
+        self.session_key = session_key
+        self.url_exceptions = url_exceptions
+
     def process_request(self, request):
         try:
             session = request.session
@@ -47,15 +58,15 @@ class LockdownMiddleware(object):
                                        'sessions framework')
 
         # Don't lock down if the URL matches an exception pattern.
-        for pattern in _url_exceptions:
+        for pattern in self.url_exceptions:
             if pattern.search(request.path):
                 return None
 
         form_data = request.method == 'POST' and request.POST or None
-        form = _lockdown_form(data=form_data)
+        form = self.form(data=form_data, **self.form_kwargs)
 
         # Don't lock down if the user is already authorized for previewing.
-        token = session.get(settings.SESSION_KEY)
+        token = session.get(self.session_key)
         if hasattr(form, 'authenticate'):
             if self.form.authenticate(token):
                 return None
@@ -67,7 +78,7 @@ class LockdownMiddleware(object):
                 token = form.generate_token()
             else:
                 token = True
-            session[settings.SESSION_KEY] = token
+            session[self.session_key] = token
             return HttpResponseRedirect(request.path)
 
         page_data = {}
