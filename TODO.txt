@@ -3,5 +3,3 @@ TODO
 
 * Once Django 1.2 ships with signed cookies (hopefully), replace
   contrib.sessions dependency with a signed cookie.
-
-* Provide a way to "log out" of the admin preview.

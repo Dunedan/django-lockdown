@@ -37,16 +37,19 @@ _default_form = get_lockdown_form(settings.FORM)
 
 
 class LockdownMiddleware(object):
-    def __init__(self, form=None, session_key=None, url_exceptions=None,
-                 **form_kwargs):
+    def __init__(self, form=None, logout_key=None, session_key=None,
+                 url_exceptions=None, **form_kwargs):
         if form is None:
             form = _default_form
+        if logout_key is None:
+            logout_key = settings.LOGOUT_KEY
         if session_key is None:
             session_key = settings.SESSION_KEY
         if url_exceptions is None:
             url_exceptions = _default_url_exceptions
         self.form = form
         self.form_kwargs = form_kwargs
+        self.logout_key = logout_key
         self.session_key = session_key
         self.url_exceptions = url_exceptions
 
@@ -65,12 +68,26 @@ class LockdownMiddleware(object):
         form_data = request.method == 'POST' and request.POST or None
         form = self.form(data=form_data, **self.form_kwargs)
 
-        # Don't lock down if the user is already authorized for previewing.
+        authorized = False
         token = session.get(self.session_key)
         if hasattr(form, 'authenticate'):
             if form.authenticate(token):
-                return None
+                authorized = True
         elif token is True:
+            authorized = True
+
+        if authorized and self.logout_key and self.logout_key in request.GET:
+            if self.session_key in session:
+                del session[self.session_key]
+            url = request.path
+            querystring = request.GET.copy()
+            del querystring[self.logout_key]
+            if querystring:
+                url = '%s?%s' % (url, querystring.urlencode())
+            return self.redirect(request)
+
+        # Don't lock down if the user is already authorized for previewing.
+        if authorized:
             return None
 
         if form.is_valid():
@@ -79,7 +96,7 @@ class LockdownMiddleware(object):
             else:
                 token = True
             session[self.session_key] = token
-            return HttpResponseRedirect(request.path)
+            return self.redirect(request)
 
         page_data = {}
         if not hasattr(form, 'show_form') or form.show_form():
@@ -87,3 +104,12 @@ class LockdownMiddleware(object):
 
         return render_to_response('lockdown/form.html', page_data,
                                   context_instance=RequestContext(request))
+
+    def redirect(self, request):
+        url = request.path
+        querystring = request.GET.copy()
+        if self.logout_key and self.logout_key in request.GET:
+            del querystring[self.logout_key]
+        if querystring:
+            url = '%s?%s' % (url, querystring.urlencode())
+        return HttpResponseRedirect(url)

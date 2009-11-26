@@ -56,12 +56,16 @@ Apply the decorator to individual views you want to protect. For example::
     def secret_page(request):
         # ...
 
-The decorator accepts three arguments:
+The decorator accepts four arguments:
 
 ``form``
   The form to use for providing an admin preview, rather than the form
   referenced by ``settings.LOCKDOWN_FORM``. Note that this must be an actual
   form class, not a module reference like the setting. 
+
+``logout_key``
+  A preview logout key to use, rather than the one provided by
+  ``settings.LOCKDOWN_LOGOUT_KEY``.
 
 ``session_key``
   The session key to use, rather than the one provided by
@@ -97,14 +101,20 @@ used), there will be no admin preview for locked-down pages.
 LOCKDOWN_URL_EXCEPTIONS
 -----------------------
 
-Optional: a list/tuple of regular expressions to be matched against
-incoming URLs. If a URL matches a regular expression in this list, it
-will not be locked. For example::
+An optional list/tuple of regular expressions to be matched against incoming
+URLs. If a URL matches a regular expression in this list, it will not be
+locked. For example::
 
     LOCKDOWN_URL_EXCEPTIONS = (
         r'^/about/$',   # unlock /about/
         r'\.json$',   # unlock JSON API
     )
+
+LOCKDOWN_LOGOUT_KEY
+-------------------
+
+A key which, if provided in the querystring of a locked URL, will log out the
+user from the preview. 
 
 LOCKDOWN_FORM
 -------------
