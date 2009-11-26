@@ -42,6 +42,6 @@ setup(
         'Framework :: Django',
     ],
     zip_safe=False,
-    test_suite='tests.runtests.runtests',
+    test_suite='runtests.runtests',
     package_data={'lockdown': ['templates/lockdown/*.html']}
 )

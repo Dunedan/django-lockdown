@@ -94,9 +94,10 @@ class AuthForm(AuthenticationForm, BasePreviewForm):
 
     def clean(self):
         cleaned_data = super(AuthForm, self).clean()
-        if self.staff_only and not self.get_user().is_staff:
+        user = self.get_user()
+        if self.staff_only and (not user or not user.is_staff):
             raise forms.ValidationError('Sorry, only staff are allowed.')
-        if self.superusers_only and not self.get_user().is_superuser:
+        if self.superusers_only and (not user or not user.is_superuser):
             raise forms.ValidationError('Sorry, only superusers are allowed.')
         return cleaned_data
 
