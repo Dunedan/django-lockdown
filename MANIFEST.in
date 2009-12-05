@@ -6,3 +6,4 @@ include README.txt
 include TODO.txt
 include HGREV
 recursive-include lockdown/templates *.html
+recursive-include lockdown/tests/templates *.html
