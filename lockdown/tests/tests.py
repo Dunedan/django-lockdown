@@ -1,20 +1,19 @@
 import datetime
 import os
 
-from django.conf import settings as django_settings, global_settings
+from django.conf import settings as django_settings
 from django.test import TestCase
 
 from lockdown import settings, middleware
 from lockdown.forms import AuthForm
 
+__all__ = ['DecoratorTests', 'MiddlewareTests']
 
 class LockdownTestCase(TestCase):
     urls = 'lockdown.tests.urls'
 
     def setUp(self):
         self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
-        django_settings.MIDDLEWARE_CLASSES = \
-                                        global_settings.MIDDLEWARE_CLASSES
 
         self._old_template_dirs = django_settings.TEMPLATE_DIRS
         django_settings.TEMPLATE_DIRS = [os.path.join(
@@ -169,93 +168,86 @@ class MiddlewareTests(BaseTests):
 
     def setUp(self):
         super(MiddlewareTests, self).setUp()
-        # Don't need to worry about fixing MIDDLEWARE_CLASSES on tearDown, it's
-        # done by the base class.
         self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
         django_settings.MIDDLEWARE_CLASSES += (
             'lockdown.middleware.LockdownMiddleware',
         )
 
+    def tearDown(self):
+        django_settings.MIDDLEWARE_CLASSES = self._old_middleware_classes
+        super(MiddlewareTests, self).tearDown()
 
-class AuthFormTests(LockdownTestCase):
+# only run AuthFormTests if django.contrib.auth is installed
+if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
+    __all__.append('AuthFormTests')
+    class AuthFormTests(LockdownTestCase):
 
-    def test_using_form(self):
-        url = '/auth/user/locked/view/'
-        response = self.client.get(url)
+        def test_using_form(self):
+            url = '/auth/user/locked/view/'
+            response = self.client.get(url)
 
-        self.assertTemplateUsed(response, 'lockdown/form.html')
+            self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        form = response.context.get('form')
-        self.assert_(isinstance(form, AuthForm))
+            form = response.context.get('form')
+            self.failUnless(isinstance(form, AuthForm))
 
-    def add_user(self, username='test', password='pw', **kwargs):
-        from django.contrib.auth.models import User
-        user = User(username=username, **kwargs)
-        user.set_password(password)
-        user.save()
+        def add_user(self, username='test', password='pw', **kwargs):
+            from django.contrib.auth.models import User
+            user = User(username=username, **kwargs)
+            user.set_password(password)
+            user.save()
 
-    def test_user(self):
-        # Skip this test if auth isn't an installed app.
-        if 'django.contrib.auth' not in django_settings.INSTALLED_APPS:
-            return
+        def test_user(self):
+            url = '/auth/user/locked/view/'
+            self.add_user()
 
-        url = '/auth/user/locked/view/'
-        self.add_user()
+            # Incorrect password.
+            post_data = {'username': 'test', 'password': 'bad'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        # Incorrect password.
-        post_data = {'username': 'test', 'password': 'bad'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'lockdown/form.html')
+            # Correct password.
+            post_data = {'username': 'test', 'password': 'pw'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
-        # Correct password.
-        post_data = {'username': 'test', 'password': 'pw'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        def test_staff(self):
+            url = '/auth/staff/locked/view/'
+            self.add_user(username='user')
+            self.add_user(username='staff', is_staff=True)
 
-    def test_staff(self):
-        # Skip this test if auth isn't an installed app.
-        if 'django.contrib.auth' not in django_settings.INSTALLED_APPS:
-            return
+            # Non-staff member.
+            post_data = {'username': 'user', 'password': 'pw'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        url = '/auth/staff/locked/view/'
-        self.add_user(username='user')
-        self.add_user(username='staff', is_staff=True)
+            # Incorrect password.
+            post_data = {'username': 'staff', 'password': 'bad'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        # Non-staff member.
-        post_data = {'username': 'user', 'password': 'pw'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'lockdown/form.html')
+            # Correct password.
+            post_data = {'username': 'staff', 'password': 'pw'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
-        # Incorrect password.
-        post_data = {'username': 'staff', 'password': 'bad'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'lockdown/form.html')
+        def test_superuser(self):
+            url = '/auth/superuser/locked/view/'
+            self.add_user(username='staff', is_staff=True)
+            self.add_user(username='superuser', is_staff=True, is_superuser=True)
 
-        # Correct password.
-        post_data = {'username': 'staff', 'password': 'pw'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+            # Non-superuser.
+            post_data = {'username': 'staff', 'password': 'pw'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
 
-    def test_superuser(self):
-        # Skip this test if auth isn't an installed app.
-        if 'django.contrib.auth' not in django_settings.INSTALLED_APPS:
-            return
+            # Incorrect password.
+            post_data = {'username': 'superuser', 'password': 'bad'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        url = '/auth/superuser/locked/view/'
-        self.add_user(username='staff', is_staff=True)
-        self.add_user(username='superuser', is_staff=True, is_superuser=True)
+            # Correct password.
+            post_data = {'username': 'superuser', 'password': 'pw'}
+            response = self.client.post(url, post_data, follow=True)
+            self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
-        # Non-superuser.
-        post_data = {'username': 'staff', 'password': 'pw'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'lockdown/form.html')
-
-        # Incorrect password.
-        post_data = {'username': 'superuser', 'password': 'bad'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'lockdown/form.html')
-
-        # Correct password.
-        post_data = {'username': 'superuser', 'password': 'pw'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateNotUsed(response, 'lockdown/form.html')

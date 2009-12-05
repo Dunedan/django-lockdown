@@ -1,1 +1,1 @@
-from lockdown.tests.tests import DecoratorTests, MiddlewareTests, AuthFormTests
+from lockdown.tests.tests import *
