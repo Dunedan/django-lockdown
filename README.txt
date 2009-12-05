@@ -81,7 +81,7 @@ The decorator accepts four arguments:
   (rather than using those defined in `LOCKDOWN_URL_EXCEPTIONS`_).
 
 Any further keyword arguments are passed to the admin preview form. The default
-form accepts one argument::
+form accepts one argument:
 
 ``passwords``
   A tuple of passwords to use, rather than the ones provided by
@@ -164,15 +164,15 @@ accepts two keyword arguments (in the ``lockdown`` decorator):
   Only allow superusers to preview. Defaults to ``False`` (but the default
   can be provided as a `LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY`_ setting).
 
-LOCKDOWN_AUTH_FORM_STAFF_ONLY
------------------------------
+LOCKDOWN_AUTHFORM_STAFF_ONLY
+----------------------------
 
 If using ``lockdown.forms.AuthForm`` and this setting is ``True``, only staff
 users will be allowed to preview (True by default).
 
 Has no effect if not using ``lockdown.forms.AuthForm``.
 
-LOCKDOWN_AUTH_FORM_SUPERUSER_ONLY
+LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY
 ---------------------------------
 
 If using ``lockdown.forms.AuthForm`` and this setting is ``True``, only
