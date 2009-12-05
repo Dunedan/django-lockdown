@@ -14,9 +14,9 @@ Install from PyPI with ``easy_install`` or ``pip``::
 
 or get the `in-development version`_::
 
-    pip install django-lockdown==dev
+    pip install django-lockdown==tip
 
-.. _in-development version: http://bitbucket.org/carljm/django-lockdown/get/tip.gz#egg=django_lockdown-dev
+.. _in-development version: http://bitbucket.org/carljm/django-lockdown/get/tip.gz#egg=django_lockdown-tip
 
 To use ``django-lockdown`` in your Django project:
 
@@ -59,34 +59,33 @@ The decorator accepts four arguments:
 
 ``form``
   The form to use for providing an admin preview, rather than the form
-  referenced by ``settings.LOCKDOWN_FORM``. Note that this must be an actual
-  form class, not a module reference like the setting. 
+  referenced by `LOCKDOWN_FORM`_. Note that this must be an actual form class,
+  not a module reference like the setting.
 
 ``until_date``
-  The date to use rather than the date provided by ``settings.LOCKDOWN_UNTIL``.
+  The date to use rather than the date provided by `LOCKDOWN_UNTIL`_.
 
 ``after_date``
-  The date to use rather than the date provided by ``settings.LOCKDOWN_AFTER``.
+  The date to use rather than the date provided by `LOCKDOWN_AFTER`_.
 
 ``logout_key``
   A preview logout key to use, rather than the one provided by
-  ``settings.LOCKDOWN_LOGOUT_KEY``.
+  `LOCKDOWN_LOGOUT_KEY`_.
 
 ``session_key``
   The session key to use, rather than the one provided by
-  ``settings.LOCKDOWN_SESSION_KEY``.
+  `LOCKDOWN_SESSION_KEY`_.
  
 ``url_exceptions``
-  A list of regular expressions for which matching urls can bypass the
-  lockdown (rather than using those defined in
-  ``settings.LOCKDOWN_URL_EXCEPTIONS``).
+  A list of regular expressions for which matching urls can bypass the lockdown
+  (rather than using those defined in `LOCKDOWN_URL_EXCEPTIONS`_).
 
 Any further keyword arguments are passed to the admin preview form. The default
 form accepts one argument::
 
 ``passwords``
   A tuple of passwords to use, rather than the ones provided by
-  ``settings.LOCKDOWN_PASSWORDS``.
+  `LOCKDOWN_PASSWORDS`_.
 
 
 Settings
@@ -100,8 +99,11 @@ views protected by django-lockdown::
 
     LOCKDOWN_PASSWORDS = ('letmein', 'beta')
 
-If this setting is not provided (and the default ``LOCKDOWN_FORM`` is being
+If this setting is not provided (and the default `LOCKDOWN_FORM`_ is being
 used), there will be no admin preview for locked-down pages.
+
+If a `LOCKDOWN_FORM`_ other than the default is used, this setting has no
+effect.
 
 LOCKDOWN_URL_EXCEPTIONS
 -----------------------
@@ -118,16 +120,16 @@ locked. For example::
 LOCKDOWN_UNTIL
 --------------
 
-Used to lock the site down up until a certain date. Use a ``datetime.datetime``
-object.
+Used to lock the site down up until a certain date. Set to a
+``datetime.datetime`` object.
 
-If neither ``LOCKDOWN_UNTIL`` or ``LOCKDOWN_AFTER`` is provided (i.e. the
-default), the site or views will always be locked.
+If neither ``LOCKDOWN_UNTIL`` nor `LOCKDOWN_AFTER`_ is provided (the default),
+the site or views will always be locked.
 
 LOCKDOWN_AFTER
 --------------
 
-Used to lock the site down after a certain date. Use a ``datetime.datetime``
+Used to lock the site down after a certain date. Set to a ``datetime.datetime``
 object.
 
 See also: `LOCKDOWN_UNTIL`_.
@@ -152,15 +154,30 @@ validates when submitted, the user will be allowed access to locked pages::
     
 A form for authenticating against ``django.contrib.auth`` users is provided
 with django-lockdown (use ``LOCKDOWN_FORM = 'lockdown.forms.AuthForm'``). It
-has two keyword arguments which can be passed (in the ``lockdown`` decorator):
+accepts two keyword arguments (in the ``lockdown`` decorator):
 
 ``staff_only``
   Only allow staff members to preview. Defaults to ``True`` (but the default
-  can be provided as a ``LOCKDOWN_AUTHFORM_STAFF_ONLY`` setting).
+  can be provided as a `LOCKDOWN_AUTHFORM_STAFF_ONLY`_ setting).
 
 ``superusers_only``
   Only allow superusers to preview. Defaults to ``False`` (but the default
-  can be provided as a ``LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY`` setting).
+  can be provided as a `LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY`_ setting).
+
+LOCKDOWN_AUTH_FORM_STAFF_ONLY
+-----------------------------
+
+If using ``lockdown.forms.AuthForm`` and this setting is ``True``, only staff
+users will be allowed to preview (True by default).
+
+Has no effect if not using ``lockdown.forms.AuthForm``.
+
+LOCKDOWN_AUTH_FORM_SUPERUSER_ONLY
+---------------------------------
+
+If using ``lockdown.forms.AuthForm`` and this setting is ``True``, only
+superusers will be allowed to preview (False by default). Has no effect if not
+using ``lockdown.forms.AuthForm``.
 
 LOCKDOWN_SESSION_KEY
 --------------------
@@ -176,7 +193,7 @@ Templates
 
 Django-lockdown uses a single template, ``lockdown/form.html``. The
 default template displays a simple "coming soon" message and the
-password entry form.
+preview authorization form.
 
 If you override this template, the lockdown preview form is available
 in the template context as ``form``.
