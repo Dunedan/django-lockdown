@@ -32,6 +32,16 @@ To use ``django-lockdown`` in your Django project:
 For more advanced customization of admin preview authorization, see
 the `LOCKDOWN_FORM`_ setting.
 
+Dependencies
+------------
+
+``django-lockdown`` requires `Django`_ 1.1 or later.
+
+.. _Django: http://www.djangoproject.com/
+
+Usage
+=====
+
 Using the middleware
 --------------------
 
