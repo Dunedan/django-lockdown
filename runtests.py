@@ -3,6 +3,20 @@
 from os.path import dirname, abspath
 import sys
 
+from django.conf import settings as django_settings
+
+if not django_settings.configured:
+    django_settings.configure(
+        DATABASE_ENGINE='sqlite3',
+        INSTALLED_APPS=(
+            'django.contrib.sessions',
+            'django.contrib.contenttypes',
+            'django.contrib.auth',
+            'lockdown',
+        ),
+        ROOT_URLCONF='lockdown.tests.urls',
+    )
+
 def runtests(*test_args):
     if not test_args:
         test_args = ['lockdown']
