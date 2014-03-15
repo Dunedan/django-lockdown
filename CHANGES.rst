@@ -6,6 +6,8 @@ tip (unreleased)
 
 - Require at least Django 1.3.
 
+- Added the csrf_token template tag to the included form template.
+
 - Minor syntax adjustments for Python 3 compatibility.
 
 - Allow multiple passwords (the passwords setting has changed from
