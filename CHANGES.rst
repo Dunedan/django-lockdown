@@ -4,6 +4,8 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Require at least Django 1.3.
+
 - Allow multiple passwords (the passwords setting has changed from
   ``LOCKDOWN_PASSWORD`` to ``LOCKDOWN_PASSWORDS``.
 

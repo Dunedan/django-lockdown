@@ -33,6 +33,7 @@ setup(
     author_email='carl@dirtcircle.com',
     url='http://bitbucket.org/carljm/django-lockdown/',
     packages=find_packages(),
+    install_requires=['Django>=1.3'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
