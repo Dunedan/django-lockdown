@@ -6,6 +6,8 @@ tip (unreleased)
 
 - Require at least Django 1.3.
 
+- Minor syntax adjustments for Python 3 compatibility.
+
 - Allow multiple passwords (the passwords setting has changed from
   ``LOCKDOWN_PASSWORD`` to ``LOCKDOWN_PASSWORDS``.
 
