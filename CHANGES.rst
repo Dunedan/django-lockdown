@@ -1,10 +1,15 @@
 CHANGES
 =======
 
-tip (unreleased)
-----------------
+0.1.3 (2014.03.15)
+------------------
+
+- Added ``LOCKDOWN_ENABLED`` setting.
+
 - Removed Django 1.1 backport of ``decorator_from_middleware_with_args``.
 
+0.1.2 (2014.03.15)
+------------------
 
 - Require at least Django 1.3.
 

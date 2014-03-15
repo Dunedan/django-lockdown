@@ -61,6 +61,10 @@ class LockdownMiddleware(object):
             raise ImproperlyConfigured('django-lockdown requires the Django '
                                        'sessions framework')
 
+        # Don't lock down if django-lockdown is disabled altogether.
+        if settings.ENABLED is False:
+            return None
+
         # Don't lock down if the URL matches an exception pattern.
         if self.url_exceptions is None:
             url_exceptions = _default_url_exceptions

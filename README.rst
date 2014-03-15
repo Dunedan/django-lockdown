@@ -101,6 +101,13 @@ form accepts one argument:
 Settings
 ========
 
+LOCKDOWN_ENABLED
+----------------
+
+An optional boolean value that, if set to False, lets you disable
+django-lockdown globally. Defaults to True (lock down enabled).
+
+
 LOCKDOWN_PASSWORDS
 ------------------
 

@@ -53,6 +53,15 @@ class BaseTests(LockdownTestCase):
         form = response.context['form']
         self.failUnless('password' in form.fields)
 
+    def test_global_disable(self):
+        _old_enabled = settings.ENABLED
+        settings.ENABLED = False
+        try:
+            response = self.client.get(self.locked_url)
+            self.assertContains(response, self.locked_contents)
+        finally:
+            settings.ENABLED = _old_enabled
+
     def test_url_exceptions(self):
         _old_url_exceptions = settings.URL_EXCEPTIONS
         settings.URL_EXCEPTIONS = (r'/view/$',)
