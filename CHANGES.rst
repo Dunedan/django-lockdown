@@ -3,6 +3,8 @@ CHANGES
 
 tip (unreleased)
 ----------------
+- Removed Django 1.1 backport of ``decorator_from_middleware_with_args``.
+
 
 - Require at least Django 1.3.
 
