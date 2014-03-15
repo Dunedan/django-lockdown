@@ -7,7 +7,11 @@ from django.conf import settings as django_settings
 
 if not django_settings.configured:
     django_settings.configure(
-        DATABASE_ENGINE='sqlite3',
+        DATABASES={
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+            },
+        },
         INSTALLED_APPS=(
             'django.contrib.sessions',
             'django.contrib.contenttypes',
@@ -22,8 +26,9 @@ def runtests(*test_args):
         test_args = ['lockdown']
     parent = dirname(abspath(__file__))
     sys.path.insert(0, parent)
-    from django.test.simple import run_tests
-    failures = run_tests(test_args, verbosity=1, interactive=True)
+    from django.test.simple import DjangoTestSuiteRunner
+    runner = DjangoTestSuiteRunner(verbosity=1, interactive=True)
+    failures = runner.run_tests(test_args)
     sys.exit(failures)
 
 
