@@ -15,6 +15,8 @@ tip (unreleased)
 
 - Allow locking up until or only after certain dates.
 
+- Support for Python 3
+
 0.1.1 (2009.11.24)
 ------------------
 
