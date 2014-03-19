@@ -24,7 +24,7 @@ def get_lockdown_form(form_path):
     module, attr = form_path[:last_dot], form_path[last_dot + 1:]
     try:
         mod = import_module(module)
-    except (ImportError, ValueError), e:
+    except (ImportError, ValueError) as e:
         raise ImproperlyConfigured('Error importing LOCKDOWN_FORM %s: "%s"'
                                    % (form_path, e))
     try:
