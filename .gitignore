@@ -2,7 +2,5 @@ dist/*
 django_lockdown.egg-info/*
 build/*
 *.pyc
-HGREV
 .project
 .pydevproject
-TAGS
