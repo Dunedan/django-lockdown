@@ -24,7 +24,7 @@ def get_lockdown_form(form_path):
     module, attr = form_path[:last_dot], form_path[last_dot + 1:]
     try:
         mod = import_module(module)
-    except (ImportError, ValueError), e:
+    except (ImportError, ValueError) as e:
         raise ImproperlyConfigured('Error importing LOCKDOWN_FORM %s: "%s"'
                                    % (form_path, e))
     try:
@@ -60,6 +60,10 @@ class LockdownMiddleware(object):
         except AttributeError:
             raise ImproperlyConfigured('django-lockdown requires the Django '
                                        'sessions framework')
+
+        # Don't lock down if django-lockdown is disabled altogether.
+        if settings.ENABLED is False:
+            return None
 
         # Don't lock down if the URL matches an exception pattern.
         if self.url_exceptions is None:

@@ -1,5 +1,6 @@
 from django.conf import settings
 
+ENABLED = getattr(settings, 'LOCKDOWN_ENABLED', True)
 URL_EXCEPTIONS = getattr(settings, 'LOCKDOWN_URL_EXCEPTIONS', ())
 PASSWORDS = getattr(settings, 'LOCKDOWN_PASSWORDS', ())
 FORM = getattr(settings, 'LOCKDOWN_FORM', 'lockdown.forms.LockdownForm')

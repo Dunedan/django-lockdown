@@ -1,8 +1,23 @@
 CHANGES
 =======
 
-tip (unreleased)
-----------------
+0.1.3 (2014.03.15)
+------------------
+
+- Added ``LOCKDOWN_ENABLED`` setting.
+
+- Removed Django 1.1 backport of ``decorator_from_middleware_with_args``.
+
+0.1.2 (2014.03.15)
+------------------
+
+- Require at least Django 1.3.
+
+- Fixed the test runner script to work with recent Django versions.
+
+- Added the csrf_token template tag to the included form template.
+
+- Minor syntax adjustments for Python 3 compatibility.
 
 - Allow multiple passwords (the passwords setting has changed from
   ``LOCKDOWN_PASSWORD`` to ``LOCKDOWN_PASSWORDS``.

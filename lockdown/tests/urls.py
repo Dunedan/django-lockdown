@@ -1,4 +1,7 @@
-from django.conf.urls.defaults import *
+try:
+    from django.conf.urls import patterns
+except ImportError:
+    from django.conf.urls.defaults import patterns  # Django <= 1.3
 
 urlpatterns = patterns('lockdown.tests.views',
     (r'^a/view/$', 'a_view'),

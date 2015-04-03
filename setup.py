@@ -17,6 +17,7 @@ except (OSError, IndexError):
 
 try:
     hgrev = open('HGREV').read()
+    hgrev = '.post' + hgrev
 except IOError:
     hgrev = ''
 
@@ -25,7 +26,7 @@ long_description = '\n'.join([open('README.rst').read(),
                               open('TODO.rst').read()])
 setup(
     name='django-lockdown',
-    version='0.1.1.post%s' % hgrev,
+    version='0.1.3%s' % hgrev,
     description=('Site-wide or per-view lockdown with customizable preview '
                  'authorization'),
     long_description=long_description,
@@ -33,6 +34,7 @@ setup(
     author_email='carl@dirtcircle.com',
     url='http://bitbucket.org/carljm/django-lockdown/',
     packages=find_packages(),
+    install_requires=['Django>=1.3'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
@@ -40,6 +42,8 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Framework :: Django',
     ],
     zip_safe=False,
