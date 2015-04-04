@@ -12,12 +12,6 @@ Install from PyPI with ``easy_install`` or ``pip``::
 
     pip install django-lockdown
 
-or get the `in-development version`_::
-
-    pip install django-lockdown==tip
-
-.. _in-development version: http://bitbucket.org/carljm/django-lockdown/get/tip.gz#egg=django_lockdown-tip
-
 To use ``django-lockdown`` in your Django project:
 
     1. Add ``'lockdown'`` to your ``INSTALLED_APPS`` setting.
