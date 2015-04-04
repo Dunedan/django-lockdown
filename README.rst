@@ -8,6 +8,10 @@ django-lockdown
 .. image:: https://coveralls.io/repos/Dunedan/django-lockdown/badge.svg
     :target: https://coveralls.io/r/Dunedan/django-lockdown
     :alt: Test Coverage
+.. image:: https://landscape.io/github/Dunedan/django-lockdown/master/landscape.svg?style=flat
+    :target: https://landscape.io/github/Dunedan/django-lockdown/master
+    :alt: Code Health
+
 
 A simple Django reusable application for locking down an entire site
 (or particular views), with customizable date ranges and preview authorization.

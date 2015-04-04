@@ -1,0 +1,5 @@
+strictness: high
+doc-warnings: yes
+test-warnings: yes
+uses:
+  - django
