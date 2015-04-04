@@ -2,6 +2,9 @@
 django-lockdown
 ===============
 
+.. image:: https://travis-ci.org/Dunedan/django-lockdown.svg?branch=master
+    :target: https://travis-ci.org/Dunedan/django-lockdown
+
 A simple Django reusable application for locking down an entire site
 (or particular views), with customizable date ranges and preview authorization.
 
