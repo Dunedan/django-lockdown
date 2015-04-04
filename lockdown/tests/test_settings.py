@@ -6,7 +6,8 @@ DATABASES = {
     }
 }
 
-SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(64)])
+SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+                      for i in range(64)])
 
 MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware',
                       'django.middleware.csrf.CsrfViewMiddleware',

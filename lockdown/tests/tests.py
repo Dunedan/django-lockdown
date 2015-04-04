@@ -9,6 +9,7 @@ from lockdown.forms import AuthForm
 
 __all__ = ['DecoratorTests', 'MiddlewareTests']
 
+
 class LockdownTestCase(TestCase):
     urls = 'lockdown.tests.urls'
 
@@ -17,7 +18,7 @@ class LockdownTestCase(TestCase):
 
         self._old_template_dirs = django_settings.TEMPLATE_DIRS
         django_settings.TEMPLATE_DIRS = [os.path.join(
-                os.path.dirname(os.path.realpath(__file__)), 'templates')]
+            os.path.dirname(os.path.realpath(__file__)), 'templates')]
 
         self._old_pw = settings.PASSWORDS
         settings.PASSWORDS = ('letmein',)
@@ -41,7 +42,6 @@ class BaseTests(LockdownTestCase):
 
     Subclasses should provide ``locked_url`` and ``locked_contents``
     attributes.
-
     """
 
     def test_lockdown_template_used(self):
@@ -66,7 +66,7 @@ class BaseTests(LockdownTestCase):
         _old_url_exceptions = settings.URL_EXCEPTIONS
         settings.URL_EXCEPTIONS = (r'/view/$',)
         middleware._default_url_exceptions = \
-                middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
+            middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
 
         try:
             response = self.client.get(self.locked_url)
@@ -74,7 +74,7 @@ class BaseTests(LockdownTestCase):
         finally:
             settings.URL_EXCEPTIONS = _old_url_exceptions
             middleware._default_url_exceptions = \
-                    middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
+                middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
 
     def test_submit_password(self):
         response = self.client.post(self.locked_url, {'password': 'letmein'},
@@ -97,7 +97,7 @@ class BaseTests(LockdownTestCase):
         finally:
             settings.FORM = _old_form
             middleware._default_form = middleware.get_lockdown_form(
-                                                                settings.FORM)
+                settings.FORM)
 
     def test_locked_until(self):
         _old_until_date = settings.UNTIL_DATE
@@ -189,6 +189,7 @@ class MiddlewareTests(BaseTests):
 # only run AuthFormTests if django.contrib.auth is installed
 if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
     __all__.append('AuthFormTests')
+
     class AuthFormTests(LockdownTestCase):
 
         def test_using_form(self):
