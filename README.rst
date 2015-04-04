@@ -11,6 +11,12 @@ django-lockdown
 .. image:: https://landscape.io/github/Dunedan/django-lockdown/master/landscape.svg?style=flat
     :target: https://landscape.io/github/Dunedan/django-lockdown/master
     :alt: Code Health
+.. image:: https://pypip.in/version/django-lockdown/badge.svg
+    :target: https://pypi.python.org/pypi/django-lockdown/
+    :alt: Latest Version
+.. image:: https://pypip.in/download/django-lockdown/badge.svg
+    :target: https://pypi.python.org/pypi/django-lockdown/
+    :alt: Downloads
 
 
 A simple Django reusable application for locking down an entire site
