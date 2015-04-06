@@ -17,20 +17,22 @@ _default_url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
 
 
 def get_lockdown_form(form_path):
-    form_path = settings.FORM
-    if not form_path or '.' not in form_path:
-        raise ImproperlyConfigured('The form module path was not provided.')
-    last_dot = form_path.rfind('.')
-    module, attr = form_path[:last_dot], form_path[last_dot + 1:]
+    if not form_path:
+        raise ImproperlyConfigured('No LOCKDOWN_FORM specified.')
+    form_path_list = form_path.split(".")
+    module = ".".join(form_path_list[:-1])
+    attr = form_path_list[-1]
     try:
         mod = import_module(module)
     except (ImportError, ValueError) as exc:
-        raise ImproperlyConfigured('Error importing LOCKDOWN_FORM %s: "%s"'
-                                   % (form_path, exc))
+        raise ImproperlyConfigured('Module configured in LOCKDOWN_FORM (%s) to'
+                                   ' contain the form class couldn\'t be '
+                                   'found.' % module)
     try:
         form = getattr(mod, attr)
     except AttributeError:
-        raise ImproperlyConfigured('Module "%s" does not define a "%s" form.'
+        raise ImproperlyConfigured('The module configured in LOCKDOWN_FORM '
+                                   ' (%s) doesn\'t define a "%s" form.'
                                    % (module, attr))
     return form
 

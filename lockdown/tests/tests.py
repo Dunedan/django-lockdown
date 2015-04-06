@@ -1,10 +1,11 @@
 import datetime
 import os
 
-from django.test import TestCase
 from django.conf import settings as django_settings
+from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase
 
-from lockdown import settings, middleware
+from lockdown import middleware, settings
 from lockdown.forms import AuthForm
 
 __all__ = ['DecoratorTests', 'MiddlewareTests']
@@ -98,6 +99,22 @@ class BaseTests(LockdownTestCase):
             settings.FORM = _old_form
             middleware._default_form = middleware.get_lockdown_form(
                 settings.FORM)
+
+    def test_invalid_custom_form(self):
+        """Test that pointing to an invalid form properly produces an error"""
+
+        # no form configured at all
+        self.assertRaises(ImproperlyConfigured,
+                          middleware.get_lockdown_form, None)
+        # invalid module name in the configured form
+        self.assertRaises(ImproperlyConfigured,
+                          middleware.get_lockdown_form, 'invalidform')
+        # not existing module for form
+        self.assertRaises(ImproperlyConfigured,
+                          middleware.get_lockdown_form, 'invalid.form')
+        # existing module, but no form with that name in the module
+        self.assertRaises(ImproperlyConfigured,
+                          middleware.get_lockdown_form, 'lockdown.forms.foo')
 
     def test_locked_until(self):
         _old_until_date = settings.UNTIL_DATE
