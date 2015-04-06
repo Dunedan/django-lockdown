@@ -12,4 +12,4 @@ urlpatterns = patterns('lockdown.tests.views',
                        (r'^auth/staff/locked/view/$', 'staff_locked_view'),
                        (r'^auth/superuser/locked/view/$',
                         'superuser_locked_view'),
-)
+                       )

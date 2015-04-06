@@ -1,10 +1,10 @@
 import datetime
 import re
 
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
 from lockdown import settings
@@ -24,7 +24,7 @@ def get_lockdown_form(form_path):
     attr = form_path_list[-1]
     try:
         mod = import_module(module)
-    except (ImportError, ValueError) as exc:
+    except (ImportError, ValueError):
         raise ImproperlyConfigured('Module configured in LOCKDOWN_FORM (%s) to'
                                    ' contain the form class couldn\'t be '
                                    'found.' % module)

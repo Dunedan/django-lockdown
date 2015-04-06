@@ -9,10 +9,11 @@ DATABASES = {
 SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
                       for i in range(64)])
 
-MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware',
+MIDDLEWARE_CLASSES = ('django.contrib.sessions.middleware.SessionMiddleware',
+                      'django.middleware.common.CommonMiddleware',
                       'django.middleware.csrf.CsrfViewMiddleware',
-                      'django.contrib.sessions.middleware.SessionMiddleware',
-                      'django.contrib.auth.middleware.AuthenticationMiddleware')
+                      'django.contrib.auth.middleware.AuthenticationMiddleware'
+                      )
 
 INSTALLED_APPS = (
     'django.contrib.sessions',
