@@ -12,6 +12,7 @@ __all__ = ['DecoratorTests', 'MiddlewareTests']
 
 
 class LockdownTestCase(TestCase):
+
     """Base class for the other tests, setting up a proper test environment"""
 
     urls = 'lockdown.tests.urls'
@@ -97,8 +98,7 @@ class BaseTests(LockdownTestCase):
         self.assertContains(response, self.locked_contents)
 
     def test_submit_wrong_password(self):
-        """Test that access to locked content doesn't work with wrong passwords
-        """
+        """Test access to locked content is denied for wrong passwords"""
         response = self.client.post(self.locked_url, {'password': 'imacrook'})
         self.assertContains(response, 'Incorrect password.')
 
@@ -194,6 +194,7 @@ class BaseTests(LockdownTestCase):
 
 
 class DecoratorTests(BaseTests):
+
     """Tests for using lockdown via decorators"""
 
     locked_url = '/locked/view/'
@@ -211,6 +212,7 @@ class DecoratorTests(BaseTests):
 
 
 class MiddlewareTests(BaseTests):
+
     """Tests for using lockdown via its middleware"""
 
     locked_url = '/a/view/'
@@ -234,10 +236,13 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
     __all__.append('AuthFormTests')
 
     class AuthFormTests(LockdownTestCase):
+
         """Tests for using the auth form for previewing locked pages"""
 
         def test_using_form(self):
-            """Test if unauthorized access to a locked page shows the auth form
+            """Test unauthorized access to locked page
+
+            Unauthorized access to a to locked page should show the auth form
             """
             url = '/auth/user/locked/view/'
             response = self.client.get(url)
@@ -255,8 +260,7 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             user.save()
 
         def test_user(self):
-            """Test access to a locked page which requires an authorized user
-            """
+            """Test access to a locked page which requires an authorized user"""
             url = '/auth/user/locked/view/'
             self.add_user()
 
