@@ -1,3 +1,4 @@
-Carl Meyer <carl@dirtcircle.com>
-Chris Beaven <smileychris@gmail.com>
-Markus Kaiserswerth <github@sensun.org>
+- Carl Meyer <carl@dirtcircle.com>
+- Chris Beaven <smileychris@gmail.com>
+- Markus Kaiserswerth <github@sensun.org>
+- Daniel Roschka <danielroschka@phoenitydawn.de>
