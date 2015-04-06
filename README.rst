@@ -72,7 +72,11 @@ Optionally, you may also add URL regular expressions to a
 Using the decorator
 -------------------
 
-Apply the decorator to individual views you want to protect. For example::
+- Import the decorator::
+
+    from lockdown.decorators import lockdown
+
+- Apply the decorator to individual views you want to protect. For example::
 
     @lockdown()
     def secret_page(request):
