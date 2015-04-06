@@ -19,8 +19,9 @@ django-lockdown
     :alt: Downloads
 
 
-A simple Django reusable application for locking down an entire site
-(or particular views), with customizable date ranges and preview authorization.
+``django-lockdown`` is a reusable Django application for locking down an entire
+site (or particular views), with customizable date ranges and preview
+authorization.
 
 Installation
 ============
@@ -31,14 +32,14 @@ Install from PyPI with ``easy_install`` or ``pip``::
 
 To use ``django-lockdown`` in your Django project:
 
-    1. Add ``'lockdown'`` to your ``INSTALLED_APPS`` setting.
+1. Add ``'lockdown'`` to your ``INSTALLED_APPS``.
 
-    2. To enable admin preview of locked-down sites or views with
-       passwords, set the `LOCKDOWN_PASSWORDS`_ setting to a tuple of one or
-       more plain-text passwords.
+2. To enable admin preview of locked-down sites or views with
+   passwords, set the `LOCKDOWN_PASSWORDS`_ setting to a tuple of one or
+   more plain-text passwords.
 
-    3. Protect the entire site by using middleware, or protect individual views
-       by applying a decorator to them.
+3. Protect the entire site by using middleware, or protect individual views
+   by applying a decorator to them.
        
 For more advanced customization of admin preview authorization, see
 the `LOCKDOWN_FORM`_ setting.
@@ -46,9 +47,10 @@ the `LOCKDOWN_FORM`_ setting.
 Dependencies
 ------------
 
-``django-lockdown`` requires `Django`_ 1.3 or later.
+``django-lockdown`` requires `Python`_ 2.7 or later and `Django`_ 1.3 or later.
 
-.. _Django: http://www.djangoproject.com/
+.. _Python: https://www.python.org/
+.. _Django: https://www.djangoproject.com/
 
 Usage
 =====
@@ -76,7 +78,7 @@ Apply the decorator to individual views you want to protect. For example::
     def secret_page(request):
         # ...
 
-The decorator accepts four arguments:
+The decorator accepts six arguments:
 
 ``form``
   The form to use for providing an admin preview, rather than the form
@@ -115,8 +117,8 @@ Settings
 LOCKDOWN_ENABLED
 ----------------
 
-An optional boolean value that, if set to False, lets you disable
-django-lockdown globally. Defaults to True (lock down enabled).
+An optional boolean value that, if set to False, disables
+``django-lockdown`` globally. Defaults to True (lock down enabled).
 
 
 LOCKDOWN_PASSWORDS
@@ -165,7 +167,7 @@ See also: `LOCKDOWN_UNTIL`_.
 LOCKDOWN_LOGOUT_KEY
 -------------------
 
-A key which, if provided in the querystring of a locked URL, will log out the
+A key which, if provided in the query string of a locked URL, will log out the
 user from the preview. 
 
 LOCKDOWN_FORM
@@ -219,9 +221,9 @@ the session key used; the default is ``'lockdown-allow'``.
 Templates
 =========
 
-Django-lockdown uses a single template, ``lockdown/form.html``. The
+``django-lockdown`` uses a single template, ``lockdown/form.html``. The
 default template displays a simple "coming soon" message and the
 preview authorization form.
 
-If you override this template, the lockdown preview form is available
+If you want to override this template, the lockdown preview form is available
 in the template context as ``form``.
