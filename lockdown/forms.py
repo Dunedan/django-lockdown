@@ -5,29 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from lockdown import settings
 
 
-class BasePreviewForm(forms.Form):
-
-    def generate_token(self):
-        """Generate an authentication token for future requests
-
-        Generate a token which can be used to authenticate the user for future
-        requests.
-        """
-        return True
-
-    def authenticate(self, token_value):
-        """Authenticate the user from a stored token value.
-
-        If the ``token_value`` is ``None``, then no token was retrieved.
-        """
-        return token_value is True
-
-    def show_form(self):
-        """Determine whether or not the form should be shown on locked pages."""
-        return True
-
-
-class LockdownForm(BasePreviewForm):
+class LockdownForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(render_value=False))
 
     def __init__(self, passwords=None, *args, **kwargs):
@@ -64,7 +42,7 @@ class LockdownForm(BasePreviewForm):
         return bool(self.valid_passwords)
 
 
-class AuthForm(AuthenticationForm, BasePreviewForm):
+class AuthForm(AuthenticationForm):
 
     def __init__(self, staff_only=None, superusers_only=None, *args,
                  **kwargs):
@@ -110,3 +88,7 @@ class AuthForm(AuthenticationForm, BasePreviewForm):
             return False
         backend = auth.load_backend(backend_path)
         return bool(backend.get_user(user_id))
+
+    def show_form(self):
+        """Determine whether or not the form should be shown on locked pages."""
+        return True
