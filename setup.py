@@ -12,6 +12,8 @@ setup(
     long_description=long_description,
     author='Carl Meyer',
     author_email='carl@dirtcircle.com',
+    maintainer='Daniel Roschka',
+    maintainer_email='danielroschka@phoenitydawn.de',
     url='https://github.com/Dunedan/django-lockdown/',
     packages=find_packages(),
     install_requires=['Django>=1.3'],
