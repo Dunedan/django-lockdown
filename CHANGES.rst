@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+tip (unreleased)
+----------------
+
+- Drops support for Django <=1.3
+
 1.1 (2015.04.06)
 ----------------
 
