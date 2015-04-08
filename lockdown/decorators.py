@@ -1,4 +1,11 @@
 from django.utils.decorators import decorator_from_middleware_with_args
 from lockdown.middleware import LockdownMiddleware
 
-lockdown = decorator_from_middleware_with_args(LockdownMiddleware)
+def lockdown(*args, **kwargs):
+    """Defines a decorator based on the LockdownMiddleware
+
+    This decorator takes the same arguments as the middleware, but allows a
+    more granular locking than the middleware.
+    """
+    return decorator_from_middleware_with_args(LockdownMiddleware)(*args,
+                                                                   **kwargs)

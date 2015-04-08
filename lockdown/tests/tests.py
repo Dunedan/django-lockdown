@@ -42,6 +42,7 @@ class LockdownTestCase(TestCase):
 
 
 class BaseTests(LockdownTestCase):
+
     """Base tests for lockdown functionality
 
     These base tests are used for testing lockdowns decorator and middleware
