@@ -1,12 +1,12 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 
-urlpatterns = patterns('lockdown.tests.views',
-                       (r'^a/view/$', 'a_view'),
-                       (r'^locked/view/$', 'locked_view'),
-                       (r'^overridden/locked/view/$',
-                        'overridden_locked_view'),
-                       (r'^auth/user/locked/view/$', 'user_locked_view'),
-                       (r'^auth/staff/locked/view/$', 'staff_locked_view'),
-                       (r'^auth/superuser/locked/view/$',
-                        'superuser_locked_view'),
-                       )
+from . import views
+
+urlpatterns = [
+    url(r'^a/view/$', views.a_view),
+    url(r'^locked/view/$', views.locked_view),
+    url(r'^overridden/locked/view/$', views.overridden_locked_view),
+    url(r'^auth/user/locked/view/$', views.user_locked_view),
+    url(r'^auth/staff/locked/view/$', views.staff_locked_view),
+    url(r'^auth/superuser/locked/view/$', views.superuser_locked_view),
+]
