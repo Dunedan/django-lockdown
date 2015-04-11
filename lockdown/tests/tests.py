@@ -199,7 +199,7 @@ class DecoratorTests(BaseTests):
     """Tests for using lockdown via decorators"""
 
     locked_url = '/locked/view/'
-    locked_contents = 'A locked view.'
+    locked_contents = b'A locked view.'
 
     def test_overridden_password(self):
         """Test that locking works when overriding the password"""
@@ -258,7 +258,7 @@ class MiddlewareTests(BaseTests):
     """Tests for using lockdown via its middleware"""
 
     locked_url = '/a/view/'
-    locked_contents = 'A view.'
+    locked_contents = b'A view.'
 
     def setUp(self):
         """Additional setup for middleware tests"""
