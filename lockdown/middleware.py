@@ -80,7 +80,7 @@ class LockdownMiddleware(object):
         if self.url_exceptions is None:
             url_exceptions = _default_url_exceptions
         else:
-            url_exceptions = self.url_exceptions
+            url_exceptions = compile_url_exceptions(self.url_exceptions)
         for pattern in url_exceptions:
             if pattern.search(request.path):
                 return None

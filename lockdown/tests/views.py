@@ -21,6 +21,12 @@ def overridden_locked_view(request):
     return HttpResponse('A locked view.')
 
 
+@lockdown(url_exceptions=(r'^/locked/view/with/exception2/',))
+def locked_view_with_exception(request):
+    """View, locked by the decorator with url exceptions"""
+    return HttpResponse('A locked view.')
+
+
 @lockdown(form=AuthForm, staff_only=False)
 def user_locked_view(request):
     """View, locked by the decorator with access for known users only"""

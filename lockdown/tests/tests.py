@@ -211,6 +211,14 @@ class DecoratorTests(BaseTests):
         response = self.client.post(url, {'password': 'squirrel'}, follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
+        url = '/locked/view/with/exception/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+        url = '/locked/view/with/exception2/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+
 
 class MiddlewareTests(BaseTests):
 
