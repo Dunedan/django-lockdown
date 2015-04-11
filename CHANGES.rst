@@ -4,7 +4,12 @@ CHANGES
 tip (unreleased)
 ----------------
 
-- Drops support for Django <=1.3
+- Drops support for Django <=1.3.
+
+- Fixes not working URL exceptions when specifying them in the decorator
+  arguments.
+
+- Improves tests.
 
 1.1 (2015.04.06)
 ----------------

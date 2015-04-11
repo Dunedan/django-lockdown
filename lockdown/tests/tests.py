@@ -69,7 +69,7 @@ class BaseTests(LockdownTestCase):
         settings.ENABLED = False
         try:
             response = self.client.get(self.locked_url)
-            self.assertContains(response, self.locked_contents)
+            self.assertEqual(response.content, self.locked_contents)
         finally:
             settings.ENABLED = _old_enabled
 
@@ -86,7 +86,7 @@ class BaseTests(LockdownTestCase):
 
         try:
             response = self.client.get(self.locked_url)
-            self.assertContains(response, self.locked_contents)
+            self.assertEqual(response.content, self.locked_contents)
         finally:
             settings.URL_EXCEPTIONS = _old_url_exceptions
             middleware._default_url_exceptions = \
@@ -96,7 +96,7 @@ class BaseTests(LockdownTestCase):
         """Test that access to locked content works with the correct password"""
         response = self.client.post(self.locked_url, {'password': 'letmein'},
                                     follow=True)
-        self.assertContains(response, self.locked_contents)
+        self.assertEqual(response.content, self.locked_contents)
 
     def test_submit_wrong_password(self):
         """Test access to locked content is denied for wrong passwords"""
@@ -112,7 +112,7 @@ class BaseTests(LockdownTestCase):
         try:
             response = self.client.post(self.locked_url, {'answer': '42'},
                                         follow=True)
-            self.assertContains(response, self.locked_contents)
+            self.assertEqual(response.content, self.locked_contents)
         finally:
             settings.FORM = _old_form
             middleware._default_form = middleware.get_lockdown_form(
@@ -146,7 +146,7 @@ class BaseTests(LockdownTestCase):
 
             settings.UNTIL_DATE = yesterday
             response = self.client.get(self.locked_url)
-            self.assertContains(response, self.locked_contents)
+            self.assertEqual(response.content, self.locked_contents)
         finally:
             settings.UNTIL_DATE = _old_until_date
 
@@ -163,7 +163,7 @@ class BaseTests(LockdownTestCase):
 
             settings.AFTER_DATE = tomorrow
             response = self.client.get(self.locked_url)
-            self.assertContains(response, self.locked_contents)
+            self.assertEqual(response.content, self.locked_contents)
         finally:
             settings.AFTER_DATE = _old_after_date
 
@@ -188,7 +188,7 @@ class BaseTests(LockdownTestCase):
             settings.UNTIL_DATE = yesterday
             settings.AFTER_DATE = tomorrow
             response = self.client.get(self.locked_url)
-            self.assertContains(response, self.locked_contents)
+            self.assertEqual(response.content, self.locked_contents)
         finally:
             settings.UNTIL_DATE = _old_until_date
             settings.AFTER_DATE = _old_after_date
@@ -201,8 +201,8 @@ class DecoratorTests(BaseTests):
     locked_url = '/locked/view/'
     locked_contents = 'A locked view.'
 
-    def test_overridden_settings(self):
-        """Test that locking works when overriding decorator arguments"""
+    def test_overridden_password(self):
+        """Test that locking works when overriding the password"""
         url = '/overridden/locked/view/'
 
         response = self.client.post(url, {'password': 'letmein'}, follow=True)
@@ -210,14 +210,47 @@ class DecoratorTests(BaseTests):
 
         response = self.client.post(url, {'password': 'squirrel'}, follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
 
-        url = '/locked/view/with/exception/'
+    def test_overridden_url_exceptions(self):
+        """Test that locking works when overriding the url exceptions"""
+        url = '/locked/view/with/exception1/'
         response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
         url = '/locked/view/with/exception2/'
         response = self.client.post(url, follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+    def test_overridden_until_date(self):
+        """Test that locking works when overriding the until date"""
+        url = '/locked/view/until/yesterday/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+        url = '/locked/view/until/tomorrow/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+    def test_overridden_after_date(self):
+        """Test that locking works when overriding the after date"""
+        url = '/locked/view/after/yesterday/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+        url = '/locked/view/after/tomorrow/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+    def test_overridden_until_and_after_date(self):
+        """Test that locking works when overriding the after date"""
+        url = '/locked/view/until/and/after/'
+        response = self.client.post(url, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
 
 
 class MiddlewareTests(BaseTests):
@@ -326,4 +359,3 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             post_data = {'username': 'superuser', 'password': 'pw'}
             response = self.client.post(url, post_data, follow=True)
             self.assertTemplateNotUsed(response, 'lockdown/form.html')
-
