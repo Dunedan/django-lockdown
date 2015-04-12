@@ -193,6 +193,22 @@ class BaseTests(LockdownTestCase):
             settings.UNTIL_DATE = _old_until_date
             settings.AFTER_DATE = _old_after_date
 
+    def test_missing_session_middleware(self):
+        """Test behavior with missing session middleware
+
+        When the session middleware isn't present an ImproperlyConfigured error
+        is expected.
+        """
+        _old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
+        mwc = list(_old_middleware_classes)
+        mwc.remove('django.contrib.sessions.middleware.SessionMiddleware')
+        mwc.remove('django.contrib.auth.middleware.AuthenticationMiddleware')
+        django_settings.MIDDLEWARE_CLASSES = tuple(mwc)
+        self.assertRaises(ImproperlyConfigured,
+                          self.client.get,
+                          self.locked_url)
+        django_settings.MIDDLEWARE_CLASSES = _old_middleware_classes
+
 
 class DecoratorTests(BaseTests):
 
@@ -245,7 +261,7 @@ class DecoratorTests(BaseTests):
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
         self.assertEqual(response.content, self.locked_contents)
 
-    def test_overridden_until_and_after_date(self):
+    def test_overridden_both_dates(self):
         """Test that locking works when overriding the after date"""
         url = '/locked/view/until/and/after/'
         response = self.client.post(url, follow=True)
