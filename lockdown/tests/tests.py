@@ -19,12 +19,6 @@ class LockdownTestCase(TestCase):
 
     def setUp(self):
         """Basic setup for all tests"""
-        self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
-
-        self._old_template_dirs = django_settings.TEMPLATE_DIRS
-        django_settings.TEMPLATE_DIRS = [os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), 'templates')]
-
         self._old_pw = settings.PASSWORDS
         settings.PASSWORDS = ('letmein',)
 
@@ -34,8 +28,6 @@ class LockdownTestCase(TestCase):
 
     def tearDown(self):
         """Tearing down all settings made for the tests after running them"""
-        django_settings.MIDDLEWARE_CLASSES = self._old_middleware_classes
-        django_settings.TEMPLATE_DIRS = self._old_template_dirs
         settings.PASSWORDS = self._old_pw
         settings.FORM = self._old_form
         middleware._default_form = middleware.get_lockdown_form(settings.FORM)
@@ -199,15 +191,26 @@ class BaseTests(LockdownTestCase):
         When the session middleware isn't present an ImproperlyConfigured error
         is expected.
         """
-        _old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
-        mwc = list(_old_middleware_classes)
-        mwc.remove('django.contrib.sessions.middleware.SessionMiddleware')
-        mwc.remove('django.contrib.auth.middleware.AuthenticationMiddleware')
-        django_settings.MIDDLEWARE_CLASSES = tuple(mwc)
-        self.assertRaises(ImproperlyConfigured,
-                          self.client.get,
-                          self.locked_url)
-        django_settings.MIDDLEWARE_CLASSES = _old_middleware_classes
+        try:
+            with self.modify_settings(MIDDLEWARE_CLASSES={
+                'remove': [
+                    'django.contrib.sessions.middleware.SessionMiddleware',
+                    'django.contrib.auth.middleware.AuthenticationMiddleware'
+                ]
+            }):
+                self.assertRaises(ImproperlyConfigured,
+                                  self.client.get,
+                                  self.locked_url)
+        except AttributeError:
+            # Workaround for Django <1.7
+            mwc = list(django_settings.MIDDLEWARE_CLASSES)
+            mwc.remove('django.contrib.sessions.middleware.SessionMiddleware')
+            mwc.remove(
+                'django.contrib.auth.middleware.AuthenticationMiddleware')
+            with self.settings(MIDDLEWARE_CLASSES=tuple(mwc)):
+                self.assertRaises(ImproperlyConfigured,
+                                  self.client.get,
+                                  self.locked_url)
 
 
 class DecoratorTests(BaseTests):
@@ -303,7 +306,11 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             Unauthorized access to a to locked page should show the auth form
             """
             url = '/auth/user/locked/view/'
-            response = self.client.get(url)
+
+            template_dirs = [os.path.join(os.path.dirname(
+                os.path.realpath(__file__)), 'templates')]
+            with self.settings(TEMPLATE_DIRS=template_dirs):
+                response = self.client.get(url)
 
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
