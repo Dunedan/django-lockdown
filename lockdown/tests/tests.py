@@ -306,15 +306,10 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             Unauthorized access to a to locked page should show the auth form
             """
             url = '/auth/user/locked/view/'
-
-            template_dirs = [os.path.join(os.path.dirname(
-                os.path.realpath(__file__)), 'templates')]
-            with self.settings(TEMPLATE_DIRS=template_dirs):
-                response = self.client.get(url)
-
+            response = self.client.get(url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            form = response.context.get('form')
+            form = response.context['form']
             self.failUnless(isinstance(form, AuthForm))
 
         def add_user(self, username='test', password='pw', **kwargs):

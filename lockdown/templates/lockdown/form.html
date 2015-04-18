@@ -9,14 +9,11 @@
   <p>This is not yet available to the public.</p>
 
   {% if form %}
-
   <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <p><input type="submit" value="Preview" /></p>
   </form>
-
   {% endif %}
 
 </div>
 {% endblock %}
-
