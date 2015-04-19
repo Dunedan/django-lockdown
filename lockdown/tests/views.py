@@ -4,8 +4,8 @@ from django.http import HttpResponse
 from lockdown.decorators import lockdown
 from lockdown.forms import AuthForm
 
-YESTERDAY = datetime.datetime.now()-datetime.timedelta(days=1)
-TOMORROW = datetime.datetime.now()+datetime.timedelta(days=1)
+YESTERDAY = datetime.datetime.now() - datetime.timedelta(days=1)
+TOMORROW = datetime.datetime.now() + datetime.timedelta(days=1)
 
 
 def a_view(request):

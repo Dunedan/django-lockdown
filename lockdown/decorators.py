@@ -1,6 +1,7 @@
 from django.utils.decorators import decorator_from_middleware_with_args
 from lockdown.middleware import LockdownMiddleware
 
+
 def lockdown(*args, **kwargs):
     """Defines a decorator based on the LockdownMiddleware
 
