@@ -8,6 +8,7 @@ SESSION_KEY = getattr(settings, 'LOCKDOWN_SESSION_KEY', 'lockdown-allow')
 LOGOUT_KEY = getattr(settings, 'LOCKDOWN_LOGOUT_KEY', 'preview-logout')
 UNTIL_DATE = getattr(settings, 'LOCKDOWN_UNTIL', None)
 AFTER_DATE = getattr(settings, 'LOCKDOWN_AFTER', None)
+TEMPLATE = getattr(settings, 'LOCKDOWN_TEMPLATE', 'lockdown/form.html')
 
 if not isinstance(PASSWORDS, (tuple, list)):
     PASSWORDS = PASSWORDS and (PASSWORDS,) or ()

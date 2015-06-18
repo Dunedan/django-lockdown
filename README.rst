@@ -221,13 +221,16 @@ be authorized for the remainder of their browsing session (using
 Django's built-in session support). ``LOCKDOWN_SESSION_KEY`` defines
 the session key used; the default is ``'lockdown-allow'``.
 
+LOCKDOWN_TEMPLATE
+--------------------
 
-Templates
-=========
+Optionally specify a template for django-lockdown to use. If left unset
+it will use the default 'lockdown/form.html' template.
 
-``django-lockdown`` uses a single template, ``lockdown/form.html``. The
-default template displays a simple "coming soon" message and the
-preview authorization form.
+The supplied template is rendered using a ``RequestContext`` object and
+has access to the following template variables:
 
-If you want to override this template, the lockdown preview form is available
-in the template context as ``form``.
+* ``form`` - the lockdown form instance
+* ``until_date`` - If set, the date referenced by ``LOCKDOWN_UNTILL`` or set by the decorator
+* ``after_date`` - If set, the date referenced by ``LOCKDOWN_AFTER`` or set by the decorator
+

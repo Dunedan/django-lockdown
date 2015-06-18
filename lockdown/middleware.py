@@ -144,7 +144,7 @@ class LockdownMiddleware(object):
         if not hasattr(form, 'show_form') or form.show_form():
             page_data['form'] = form
 
-        return render_to_response('lockdown/form.html', page_data,
+        return render_to_response(settings.TEMPLATE, page_data,
                                   context_instance=RequestContext(request))
 
     def redirect(self, request):
