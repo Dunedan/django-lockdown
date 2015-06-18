@@ -11,7 +11,7 @@ from lockdown import settings
 
 
 def compile_url_exceptions(url_exceptions):
-    """Returns a list of compiled regex objects, containing the url exceptions
+    """Return a list of compiled regex objects, containing the url exceptions.
 
     All URLs in that list returned won't be considered as locked.
     """
@@ -21,7 +21,7 @@ _default_url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
 
 
 def get_lockdown_form(form_path):
-    """Given a string pointing to a lockdown form, return a proper form class"""
+    """Return a form class for a given string pointing to a lockdown form."""
     if not form_path:
         raise ImproperlyConfigured('No LOCKDOWN_FORM specified.')
     form_path_list = form_path.split(".")
@@ -46,12 +46,12 @@ _default_form = get_lockdown_form(settings.FORM)
 
 class LockdownMiddleware(object):
 
-    """Middleware to lock down a whole Django site"""
+    """Middleware to lock down a whole Django site."""
 
     def __init__(self, form=None, until_date=None, after_date=None,
                  logout_key=None, session_key=None, url_exceptions=None,
                  **form_kwargs):
-        """Initialize the middleware, by setting the configuration values"""
+        """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
         if session_key is None:
@@ -65,7 +65,7 @@ class LockdownMiddleware(object):
         self.url_exceptions = url_exceptions
 
     def process_request(self, request):
-        """Checks if each request is allowed to access the current resource"""
+        """Check if each request is allowed to access the current resource."""
         try:
             session = request.session
         except AttributeError:
@@ -148,7 +148,7 @@ class LockdownMiddleware(object):
                                   context_instance=RequestContext(request))
 
     def redirect(self, request):
-        """Utility method to handle redirects"""
+        """Utility method to handle redirects."""
         url = request.path
         querystring = request.GET.copy()
         if self.logout_key and self.logout_key in request.GET:

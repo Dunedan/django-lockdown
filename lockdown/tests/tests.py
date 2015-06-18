@@ -12,12 +12,12 @@ __all__ = ['DecoratorTests', 'MiddlewareTests']
 
 class LockdownTestCase(TestCase):
 
-    """Base class for the other tests, setting up a proper test environment"""
+    """Base class for the other tests, setting up a proper test environment."""
 
     urls = 'lockdown.tests.urls'
 
     def setUp(self):
-        """Basic setup for all tests"""
+        """Basic setup for all tests."""
         self._old_pw = settings.PASSWORDS
         settings.PASSWORDS = ('letmein',)
 
@@ -26,7 +26,7 @@ class LockdownTestCase(TestCase):
         middleware._default_form = middleware.get_lockdown_form(settings.FORM)
 
     def tearDown(self):
-        """Tearing down all settings made for the tests after running them"""
+        """Tearing down all settings made for the tests after running them."""
         settings.PASSWORDS = self._old_pw
         settings.FORM = self._old_form
         middleware._default_form = middleware.get_lockdown_form(settings.FORM)
@@ -34,7 +34,7 @@ class LockdownTestCase(TestCase):
 
 class BaseTests(LockdownTestCase):
 
-    """Base tests for lockdown functionality
+    """Base tests for lockdown functionality.
 
     These base tests are used for testing lockdowns decorator and middleware
     functionality.
@@ -44,18 +44,18 @@ class BaseTests(LockdownTestCase):
     """
 
     def test_lockdown_template_used(self):
-        """Test if the login form template is used on locked pages"""
+        """Test if the login form template is used on locked pages."""
         response = self.client.get(self.locked_url)
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
     def test_form_in_context(self):
-        """Test if the login form contains a proper password field"""
+        """Test if the login form contains a proper password field."""
         response = self.client.get(self.locked_url)
         form = response.context['form']
         self.failUnless('password' in form.fields)
 
     def test_global_disable(self):
-        """Test that a page isn't locked when LOCKDOWN_ENABLED=False"""
+        """Test that a page isn't locked when LOCKDOWN_ENABLED=False."""
         _old_enabled = settings.ENABLED
         settings.ENABLED = False
         try:
@@ -65,7 +65,7 @@ class BaseTests(LockdownTestCase):
             settings.ENABLED = _old_enabled
 
     def test_url_exceptions(self):
-        """Test that a page isn't locked when it's URL is in the exception list
+        """Test that a page isn't locked when its URL is in the exception list.
 
         The excepted URLs are determinated by the
         LOCKDOWN_URL_EXCEPTIONS setting.
@@ -84,18 +84,18 @@ class BaseTests(LockdownTestCase):
                 middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
 
     def test_submit_password(self):
-        """Test that access to locked content works with the correct password"""
+        """Test that access to locked content works with a correct password."""
         response = self.client.post(self.locked_url, {'password': 'letmein'},
                                     follow=True)
         self.assertEqual(response.content, self.locked_contents)
 
     def test_submit_wrong_password(self):
-        """Test access to locked content is denied for wrong passwords"""
+        """Test access to locked content is denied for wrong passwords."""
         response = self.client.post(self.locked_url, {'password': 'imacrook'})
         self.assertContains(response, 'Incorrect password.')
 
     def test_custom_form(self):
-        """Test if access using a custom lockdown form works"""
+        """Test if access using a custom lockdown form works."""
         _old_form = settings.FORM
         settings.FORM = 'lockdown.tests.forms.CustomLockdownForm'
         middleware._default_form = middleware.get_lockdown_form(settings.FORM)
@@ -110,7 +110,7 @@ class BaseTests(LockdownTestCase):
                 settings.FORM)
 
     def test_invalid_custom_form(self):
-        """Test that pointing to an invalid form properly produces an error"""
+        """Test that pointing to an invalid form properly produces an error."""
         # no form configured at all
         self.assertRaises(ImproperlyConfigured,
                           middleware.get_lockdown_form, None)
@@ -125,7 +125,7 @@ class BaseTests(LockdownTestCase):
                           middleware.get_lockdown_form, 'lockdown.forms.foo')
 
     def test_locked_until(self):
-        """Test locking until a certain date"""
+        """Test locking until a certain date."""
         _old_until_date = settings.UNTIL_DATE
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
@@ -142,7 +142,7 @@ class BaseTests(LockdownTestCase):
             settings.UNTIL_DATE = _old_until_date
 
     def test_locked_after(self):
-        """Test locking starting at a certain date"""
+        """Test locking starting at a certain date."""
         _old_after_date = settings.AFTER_DATE
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
@@ -159,7 +159,7 @@ class BaseTests(LockdownTestCase):
             settings.AFTER_DATE = _old_after_date
 
     def test_locked_until_and_after(self):
-        """Test locking until a certain date and starting at another date"""
+        """Test locking until a certain date and starting at another date."""
         _old_until_date = settings.UNTIL_DATE
         _old_after_date = settings.AFTER_DATE
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
@@ -185,7 +185,7 @@ class BaseTests(LockdownTestCase):
             settings.AFTER_DATE = _old_after_date
 
     def test_missing_session_middleware(self):
-        """Test behavior with missing session middleware
+        """Test behavior with missing session middleware.
 
         When the session middleware isn't present an ImproperlyConfigured error
         is expected.
@@ -214,13 +214,13 @@ class BaseTests(LockdownTestCase):
 
 class DecoratorTests(BaseTests):
 
-    """Tests for using lockdown via decorators"""
+    """Tests for using lockdown via decorators."""
 
     locked_url = '/locked/view/'
     locked_contents = b'A locked view.'
 
     def test_overridden_password(self):
-        """Test that locking works when overriding the password"""
+        """Test that locking works when overriding the password."""
         url = '/overridden/locked/view/'
 
         response = self.client.post(url, {'password': 'letmein'}, follow=True)
@@ -231,7 +231,7 @@ class DecoratorTests(BaseTests):
         self.assertEqual(response.content, self.locked_contents)
 
     def test_overridden_url_exceptions(self):
-        """Test that locking works when overriding the url exceptions"""
+        """Test that locking works when overriding the url exceptions."""
         url = '/locked/view/with/exception1/'
         response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, 'lockdown/form.html')
@@ -242,7 +242,7 @@ class DecoratorTests(BaseTests):
         self.assertEqual(response.content, self.locked_contents)
 
     def test_overridden_until_date(self):
-        """Test that locking works when overriding the until date"""
+        """Test that locking works when overriding the until date."""
         url = '/locked/view/until/yesterday/'
         response = self.client.post(url, follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
@@ -253,7 +253,7 @@ class DecoratorTests(BaseTests):
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
     def test_overridden_after_date(self):
-        """Test that locking works when overriding the after date"""
+        """Test that locking works when overriding the after date."""
         url = '/locked/view/after/yesterday/'
         response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, 'lockdown/form.html')
@@ -264,7 +264,7 @@ class DecoratorTests(BaseTests):
         self.assertEqual(response.content, self.locked_contents)
 
     def test_overridden_both_dates(self):
-        """Test that locking works when overriding the after date"""
+        """Test that locking works when overriding the after date."""
         url = '/locked/view/until/and/after/'
         response = self.client.post(url, follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
@@ -273,13 +273,13 @@ class DecoratorTests(BaseTests):
 
 class MiddlewareTests(BaseTests):
 
-    """Tests for using lockdown via its middleware"""
+    """Tests for using lockdown via its middleware."""
 
     locked_url = '/a/view/'
     locked_contents = b'A view.'
 
     def setUp(self):
-        """Additional setup for middleware tests"""
+        """Additional setup for middleware tests."""
         super(MiddlewareTests, self).setUp()
         self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
         django_settings.MIDDLEWARE_CLASSES += (
@@ -287,7 +287,7 @@ class MiddlewareTests(BaseTests):
         )
 
     def tearDown(self):
-        """Additional tear down for middleware tests"""
+        """Additional tear down for middleware tests."""
         django_settings.MIDDLEWARE_CLASSES = self._old_middleware_classes
         super(MiddlewareTests, self).tearDown()
 
@@ -297,10 +297,10 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
 
     class AuthFormTests(LockdownTestCase):
 
-        """Tests for using the auth form for previewing locked pages"""
+        """Tests for using the auth form for previewing locked pages."""
 
         def test_using_form(self):
-            """Test unauthorized access to locked page
+            """Test unauthorized access to locked page.
 
             Unauthorized access to a to locked page should show the auth form
             """
@@ -312,14 +312,14 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             self.failUnless(isinstance(form, AuthForm))
 
         def add_user(self, username='test', password='pw', **kwargs):
-            """Adds a user used for testing the auth form"""
+            """Add a user used for testing the auth form."""
             from django.contrib.auth.models import User
             user = User(username=username, **kwargs)
             user.set_password(password)
             user.save()
 
         def test_user(self):
-            """Test access to a locked page which requires an authorized user"""
+            """Test access to a locked page which requires authorization."""
             url = '/auth/user/locked/view/'
             self.add_user()
 
@@ -334,7 +334,7 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
         def test_staff(self):
-            """Test access to a locked page which requires a staff user"""
+            """Test access to a locked page which requires a staff user."""
             url = '/auth/staff/locked/view/'
             self.add_user(username='user')
             self.add_user(username='staff', is_staff=True)
@@ -355,7 +355,7 @@ if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
             self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
         def test_superuser(self):
-            """Test access to a locked page which requires a superuser"""
+            """Test access to a locked page which requires a superuser."""
             url = '/auth/superuser/locked/view/'
             self.add_user(username='staff', is_staff=True)
             self.add_user(username='superuser',

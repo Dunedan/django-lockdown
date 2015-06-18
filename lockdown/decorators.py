@@ -3,7 +3,7 @@ from lockdown.middleware import LockdownMiddleware
 
 
 def lockdown(*args, **kwargs):
-    """Defines a decorator based on the LockdownMiddleware
+    """Define a decorator based on the LockdownMiddleware.
 
     This decorator takes the same arguments as the middleware, but allows a
     more granular locking than the middleware.

@@ -6,7 +6,8 @@ DATABASES = {
     }
 }
 
-SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz'
+                             '0123456789!@#$%^&*(-_=+)')
                       for i in range(64)])
 
 MIDDLEWARE_CLASSES = ('django.contrib.sessions.middleware.SessionMiddleware',

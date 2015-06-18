@@ -1,4 +1,4 @@
-strictness: high
+strictness: veryhigh
 doc-warnings: yes
 test-warnings: yes
 uses:
