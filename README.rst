@@ -229,5 +229,12 @@ Templates
 default template displays a simple "coming soon" message and the
 preview authorization form.
 
-If you want to override this template, the lockdown preview form is available
-in the template context as ``form``.
+If you want to use a different template, you can use Djangos
+`TEMPLATE_LOADERS`_ configuration option to specify a path inside your project
+to search for templates, before searching for templates included in
+``django-lockdown``.
+
+In your overwritten template the lockdown preview form is available in the
+template context as ``form``.
+
+.. _TEMPLATE_LOADERS: https://docs.djangoproject.com/en/1.8/ref/settings/#template-loaders
