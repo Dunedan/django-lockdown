@@ -11,10 +11,10 @@ django-lockdown
 .. image:: https://landscape.io/github/Dunedan/django-lockdown/master/landscape.svg?style=flat
     :target: https://landscape.io/github/Dunedan/django-lockdown/master
     :alt: Code Health
-.. image:: https://pypip.in/version/django-lockdown/badge.svg
+.. image:: https://img.shields.io/pypi/v/django-lockdown.svg
     :target: https://pypi.python.org/pypi/django-lockdown/
     :alt: Latest Version
-.. image:: https://pypip.in/download/django-lockdown/badge.svg
+.. image:: https://img.shields.io/pypi/dm/django-lockdown.svg
     :target: https://pypi.python.org/pypi/django-lockdown/
     :alt: Downloads
 
