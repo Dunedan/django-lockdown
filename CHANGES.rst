@@ -4,6 +4,8 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Adds support for Python 3.5
+
 - Drops support for Django <=1.3.
 
 - Fixes not working URL exceptions when specifying them in the decorator
