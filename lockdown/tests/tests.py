@@ -7,8 +7,6 @@ from django.test import TestCase
 from lockdown import middleware, settings
 from lockdown.forms import AuthForm
 
-__all__ = ['DecoratorTests', 'MiddlewareTests']
-
 
 class LockdownTestCase(TestCase):
 
@@ -190,26 +188,15 @@ class BaseTests(LockdownTestCase):
         When the session middleware isn't present an ImproperlyConfigured error
         is expected.
         """
-        try:
-            with self.modify_settings(MIDDLEWARE_CLASSES={
-                'remove': [
-                    'django.contrib.sessions.middleware.SessionMiddleware',
-                    'django.contrib.auth.middleware.AuthenticationMiddleware'
-                ]
-            }):
-                self.assertRaises(ImproperlyConfigured,
-                                  self.client.get,
-                                  self.locked_url)
-        except AttributeError:
-            # Workaround for Django <1.7
-            mwc = list(django_settings.MIDDLEWARE_CLASSES)
-            mwc.remove('django.contrib.sessions.middleware.SessionMiddleware')
-            mwc.remove(
-                'django.contrib.auth.middleware.AuthenticationMiddleware')
-            with self.settings(MIDDLEWARE_CLASSES=tuple(mwc)):
-                self.assertRaises(ImproperlyConfigured,
-                                  self.client.get,
-                                  self.locked_url)
+        with self.modify_settings(MIDDLEWARE_CLASSES={
+            'remove': [
+                'django.contrib.sessions.middleware.SessionMiddleware',
+                'django.contrib.auth.middleware.AuthenticationMiddleware'
+            ]
+        }):
+            self.assertRaises(ImproperlyConfigured,
+                              self.client.get,
+                              self.locked_url)
 
 
 class DecoratorTests(BaseTests):
@@ -291,88 +278,88 @@ class MiddlewareTests(BaseTests):
         django_settings.MIDDLEWARE_CLASSES = self._old_middleware_classes
         super(MiddlewareTests, self).tearDown()
 
-# only run AuthFormTests if django.contrib.auth is installed
-if 'django.contrib.auth' in django_settings.INSTALLED_APPS:
-    __all__.append('AuthFormTests')
 
-    class AuthFormTests(LockdownTestCase):
+class AuthFormTests(LockdownTestCase):
 
-        """Tests for using the auth form for previewing locked pages."""
+    """Tests for using the auth form for previewing locked pages."""
 
-        def test_using_form(self):
-            """Test unauthorized access to locked page.
+    def test_using_form(self):
+        """Test unauthorized access to locked page.
 
-            Unauthorized access to a to locked page should show the auth form
-            """
-            url = '/auth/user/locked/view/'
-            response = self.client.get(url)
-            self.assertTemplateUsed(response, 'lockdown/form.html')
+        Unauthorized access to a to locked page should show the auth form
+        """
+        url = '/auth/user/locked/view/'
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            form = response.context['form']
-            self.failUnless(isinstance(form, AuthForm))
+        form = response.context['form']
+        self.failUnless(isinstance(form, AuthForm))
 
-        def add_user(self, username='test', password='pw', **kwargs):
-            """Add a user used for testing the auth form."""
-            from django.contrib.auth.models import User
-            user = User(username=username, **kwargs)
-            user.set_password(password)
-            user.save()
+    def add_user(self, username='test', password='pw', **kwargs):
+        """Add a user used for testing the auth form."""
+        from django.contrib.auth.models import User
+        user = User(username=username, **kwargs)
+        user.set_password(password)
+        user.save()
 
-        def test_user(self):
-            """Test access to a locked page which requires authorization."""
-            url = '/auth/user/locked/view/'
-            self.add_user()
+    def test_user(self):
+        """Test access to a locked page which requires authorization."""
+        url = '/auth/user/locked/view/'
+        self.add_user()
 
-            # Incorrect password.
-            post_data = {'username': 'test', 'password': 'bad'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateUsed(response, 'lockdown/form.html')
+        # Incorrect password.
+        post_data = {'username': 'test', 'password': 'bad'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            # Correct password.
-            post_data = {'username': 'test', 'password': 'pw'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        # Correct password.
+        post_data = {'username': 'test', 'password': 'pw'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
-        def test_staff(self):
-            """Test access to a locked page which requires a staff user."""
-            url = '/auth/staff/locked/view/'
-            self.add_user(username='user')
-            self.add_user(username='staff', is_staff=True)
+    def test_staff(self):
+        """Test access to a locked page which requires a staff user."""
+        url = '/auth/staff/locked/view/'
+        self.add_user(username='user')
+        self.add_user(username='staff', is_staff=True)
 
-            # Non-staff member.
-            post_data = {'username': 'user', 'password': 'pw'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateUsed(response, 'lockdown/form.html')
+        # Non-staff member.
+        post_data = {'username': 'user', 'password': 'pw'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            # Incorrect password.
-            post_data = {'username': 'staff', 'password': 'bad'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateUsed(response, 'lockdown/form.html')
+        # Incorrect password.
+        post_data = {'username': 'staff', 'password': 'bad'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            # Correct password.
-            post_data = {'username': 'staff', 'password': 'pw'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        # Correct password.
+        post_data = {'username': 'staff', 'password': 'pw'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
 
-        def test_superuser(self):
-            """Test access to a locked page which requires a superuser."""
-            url = '/auth/superuser/locked/view/'
-            self.add_user(username='staff', is_staff=True)
-            self.add_user(username='superuser',
-                          is_staff=True,
-                          is_superuser=True)
+    def test_superuser(self):
+        """Test access to a locked page which requires a superuser."""
+        url = '/auth/superuser/locked/view/'
+        self.add_user(username='staff', is_staff=True)
+        self.add_user(username='superuser', is_staff=True, is_superuser=True)
 
-            # Non-superuser.
-            post_data = {'username': 'staff', 'password': 'pw'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateUsed(response, 'lockdown/form.html')
+        # Non-superuser.
+        post_data = {'username': 'staff', 'password': 'pw'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            # Incorrect password.
-            post_data = {'username': 'superuser', 'password': 'bad'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateUsed(response, 'lockdown/form.html')
+        # Incorrect password.
+        post_data = {'username': 'superuser', 'password': 'bad'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            # Correct password.
-            post_data = {'username': 'superuser', 'password': 'pw'}
-            response = self.client.post(url, post_data, follow=True)
-            self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        # Correct password.
+        post_data = {'username': 'superuser', 'password': 'pw'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+
+
+# Remove the BaseTests class from the module namespace, so it won't get picked
+# up by unittest.
+del BaseTests

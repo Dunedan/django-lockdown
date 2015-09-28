@@ -4,9 +4,11 @@ CHANGES
 tip (unreleased)
 ----------------
 
-- Adds support for Python 3.5
+- Adds support for Python 3.5.
 
-- Drops support for Django <=1.3.
+- Adds support for Django 1.9.
+
+- Drops support for Django <=1.6.
 
 - Fixes not working URL exceptions when specifying them in the decorator
   arguments.
