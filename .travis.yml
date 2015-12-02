@@ -12,5 +12,9 @@ install:
   - pip install coveralls
 script:
   - coverage run runtests.py
+matrix:
+  exclude:
+  - python: "3.3"
+    env: DJANGO="Django>=1.9,<1.10"
 after_success:
   coveralls
