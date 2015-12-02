@@ -16,7 +16,7 @@ setup(
     maintainer_email='danielroschka@phoenitydawn.de',
     url='https://github.com/Dunedan/django-lockdown/',
     packages=find_packages(),
-    install_requires=['Django>=1.7'],
+    install_requires=['Django>=1.8'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -29,7 +29,6 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Framework :: Django',
-        'Framework :: Django :: 1.7',
         'Framework :: Django :: 1.8',
         'Framework :: Django :: 1.9',
     ],

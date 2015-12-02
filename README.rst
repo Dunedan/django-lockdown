@@ -47,7 +47,7 @@ the `LOCKDOWN_FORM`_ setting.
 Dependencies
 ------------
 
-``django-lockdown`` requires `Python`_ 2.7 or later and `Django`_ 1.7 or later.
+``django-lockdown`` requires `Python`_ 2.7 or later and `Django`_ 1.8 or later.
 
 .. _Python: https://www.python.org/
 .. _Django: https://www.djangoproject.com/
