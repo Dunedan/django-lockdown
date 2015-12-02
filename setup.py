@@ -1,12 +1,10 @@
 from setuptools import setup, find_packages
-import subprocess
-import os.path
 
 long_description = '\n'.join([open('README.rst').read(),
                               open('CHANGES.rst').read()])
 setup(
     name='django-lockdown',
-    version='1.1',
+    version='1.2',
     description=('Lock down a Django site or individual views, with '
                  'configurable preview authorization'),
     long_description=long_description,
@@ -34,6 +32,5 @@ setup(
     ],
     zip_safe=False,
     test_suite='runtests.runtests',
-    package_data={'lockdown': ['templates/lockdown/*.html',
-                               'tests/templates/lockdown/*.html']},
+    package_data={'lockdown': ['templates/lockdown/*.html']},
 )
