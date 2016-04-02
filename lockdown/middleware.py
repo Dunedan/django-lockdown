@@ -1,11 +1,11 @@
 import datetime
 import re
+from importlib import import_module
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from importlib import import_module
 
 from lockdown import settings
 

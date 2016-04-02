@@ -7,6 +7,7 @@ import django
 from django.conf import settings
 from django.test.utils import get_runner
 
+
 def runtests(*test_args):
     """Setup and run django-lockdowns test suite."""
     os.environ['DJANGO_SETTINGS_MODULE'] = 'lockdown.tests.test_settings'
