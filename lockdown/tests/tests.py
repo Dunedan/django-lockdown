@@ -257,6 +257,12 @@ class DecoratorTests(BaseTests):
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
         self.assertEqual(response.content, self.locked_contents)
 
+    def test_overridden_extra_context(self):
+        """Test that locking works when overriding the extra context."""
+        url = '/locked/view/with/extra/context/'
+        response = self.client.get(url)
+        self.failUnless('foo' in response.context)
+
 
 class MiddlewareTests(BaseTests):
 
