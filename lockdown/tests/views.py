@@ -32,6 +32,12 @@ def locked_view_with_exception(request):
     return HttpResponse('A locked view.')
 
 
+@lockdown(extra_context={'foo': 'bar'})
+def locked_view_with_extra_context(request):
+    """View, locked by the decorator with extra context."""
+    return HttpResponse('A locked view.')
+
+
 @lockdown(until_date=YESTERDAY)
 def locked_view_until_yesterday(request):
     """View, locked till yesterday."""

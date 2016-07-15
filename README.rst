@@ -82,7 +82,7 @@ Using the decorator
     def secret_page(request):
         # ...
 
-The decorator accepts six arguments:
+The decorator accepts seven arguments:
 
 ``form``
   The form to use for providing an admin preview, rather than the form
@@ -106,6 +106,10 @@ The decorator accepts six arguments:
 ``url_exceptions``
   A list of regular expressions for which matching urls can bypass the lockdown
   (rather than using those defined in `LOCKDOWN_URL_EXCEPTIONS`_).
+
+``extra_context``
+  A dictionary of context data that will be added to the default context data
+  passed to the template.
 
 Any further keyword arguments are passed to the admin preview form. The default
 form accepts one argument:

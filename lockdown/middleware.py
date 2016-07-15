@@ -50,7 +50,7 @@ class LockdownMiddleware(object):
 
     def __init__(self, form=None, until_date=None, after_date=None,
                  logout_key=None, session_key=None, url_exceptions=None,
-                 **form_kwargs):
+                 extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
@@ -63,6 +63,7 @@ class LockdownMiddleware(object):
         self.logout_key = logout_key
         self.session_key = session_key
         self.url_exceptions = url_exceptions
+        self.extra_context = extra_context
 
     def process_request(self, request):
         """Check if each request is allowed to access the current resource."""
@@ -143,6 +144,9 @@ class LockdownMiddleware(object):
         page_data = {'until_date': until_date, 'after_date': after_date}
         if not hasattr(form, 'show_form') or form.show_form():
             page_data['form'] = form
+
+        if self.extra_context is not None:
+            page_data.update(self.extra_context)
 
         return render_to_response('lockdown/form.html', page_data,
                                   context_instance=RequestContext(request))
