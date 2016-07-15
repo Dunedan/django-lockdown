@@ -3,3 +3,4 @@
 - Markus Kaiserswerth <github@sensun.org>
 - Daniel Roschka <danielroschka@phoenitydawn.de>
 - Jan Van Bruggen <jancvanbruggen@gmail.com>
+- Adam Taylor <ataylor32@gmail.com>

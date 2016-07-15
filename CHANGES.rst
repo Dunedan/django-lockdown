@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+tip (unreleased)
+----------------
+
+- Adds support for providing additional context data to the lockdown template.
+
+
 1.2 (2015-12-03)
 ----------------
 
