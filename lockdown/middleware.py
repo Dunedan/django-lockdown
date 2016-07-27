@@ -4,8 +4,7 @@ from importlib import import_module
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 from lockdown import settings
 
@@ -148,8 +147,7 @@ class LockdownMiddleware(object):
         if self.extra_context is not None:
             page_data.update(self.extra_context)
 
-        return render_to_response('lockdown/form.html', page_data,
-                                  context_instance=RequestContext(request))
+        return render(request, 'lockdown/form.html', page_data)
 
     def redirect(self, request):
         """Utility method to handle redirects."""
