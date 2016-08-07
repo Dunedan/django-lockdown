@@ -4,7 +4,7 @@ long_description = '\n'.join([open('README.rst').read(),
                               open('CHANGES.rst').read()])
 setup(
     name='django-lockdown',
-    version='1.2',
+    version='1.3',
     description=('Lock down a Django site or individual views, with '
                  'configurable preview authorization'),
     long_description=long_description,
