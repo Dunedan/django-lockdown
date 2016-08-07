@@ -58,13 +58,23 @@ Usage
 Using the middleware
 --------------------
 
-To lock down the entire site, add the lockdown middleware to your
-``MIDDLEWARE_CLASSES`` setting::
+To lock down the entire site, add the lockdown middleware to your middlewares.
+How to set this setting depends on the Django version you're using.
+
+For Django 1.8 and 1.9 use:
 
     MIDDLEWARE_CLASSES = (
         # ...
         'lockdown.middleware.LockdownMiddleware',
     )
+
+For Django 1.10 and newer use:
+
+    MIDDLEWARE = [
+        # ...
+        'lockdown.middleware.LockdownMiddleware',
+    ]
+
     
 Optionally, you may also add URL regular expressions to a
 `LOCKDOWN_URL_EXCEPTIONS`_ setting.

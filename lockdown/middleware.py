@@ -47,14 +47,15 @@ class LockdownMiddleware(object):
 
     """Middleware to lock down a whole Django site."""
 
-    def __init__(self, form=None, until_date=None, after_date=None,
-                 logout_key=None, session_key=None, url_exceptions=None,
-                 extra_context=None, **form_kwargs):
+    def __init__(self, get_response=None, form=None, until_date=None,
+                 after_date=None, logout_key=None, session_key=None,
+                 url_exceptions=None, extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
         if session_key is None:
             session_key = settings.SESSION_KEY
+        self.get_response = get_response
         self.form = form
         self.form_kwargs = form_kwargs
         self.until_date = until_date
@@ -63,6 +64,14 @@ class LockdownMiddleware(object):
         self.session_key = session_key
         self.url_exceptions = url_exceptions
         self.extra_context = extra_context
+
+    def __call__(self, request):
+        response = self.process_request(request)
+
+        if not response:
+            response = self.get_response(request)
+
+        return response
 
     def process_request(self, request):
         """Check if each request is allowed to access the current resource."""

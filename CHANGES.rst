@@ -1,8 +1,10 @@
 CHANGES
 =======
 
-tip (unreleased)
+1.3 (2016-08-07)
 ----------------
+
+- Adds support for Django 1.10.
 
 - Adds support for providing additional context data to the lockdown template.
 
