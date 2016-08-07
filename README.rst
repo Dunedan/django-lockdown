@@ -61,14 +61,14 @@ Using the middleware
 To lock down the entire site, add the lockdown middleware to your middlewares.
 How to set this setting depends on the Django version you're using.
 
-For Django 1.8 and 1.9 use:
+For Django 1.8 and 1.9 use::
 
     MIDDLEWARE_CLASSES = (
         # ...
         'lockdown.middleware.LockdownMiddleware',
     )
 
-For Django 1.10 and newer use:
+For Django 1.10 and newer use::
 
     MIDDLEWARE = [
         # ...
