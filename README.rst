@@ -241,14 +241,13 @@ Templates
 
 ``django-lockdown`` uses a single template, ``lockdown/form.html``. The
 default template displays a simple "coming soon" message and the
-preview authorization form.
+preview authorization form, if a password via `LOCKDOWN_PASSWORDS`_ is set.
 
-If you want to use a different template, you can use Djangos
-`TEMPLATE_LOADERS`_ configuration option to specify a path inside your project
-to search for templates, before searching for templates included in
-``django-lockdown``.
+If you want to use a different template, you can use Djangos template
+`loaders`_ to specify a path inside your project to search for templates,
+before searching for templates included in ``django-lockdown``.
 
 In your overwritten template the lockdown preview form is available in the
 template context as ``form``.
 
-.. _TEMPLATE_LOADERS: https://docs.djangoproject.com/en/1.8/ref/settings/#template-loaders
+.. _loaders: https://docs.djangoproject.com/en/1.10/ref/templates/api/#template-loaders
