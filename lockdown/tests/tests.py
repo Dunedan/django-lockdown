@@ -10,7 +10,7 @@ import django
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
-from lockdown import middleware, settings
+from lockdown import middleware
 from lockdown.forms import AuthForm
 
 
@@ -33,20 +33,21 @@ class BaseTests(TestCase):
         response = self.client.get(self.locked_url)
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
-    @patch('lockdown.tests.tests.settings.PASSWORDS', ('letmein',))
+    @patch('lockdown.tests.tests.middleware.settings.PASSWORDS', ('letmein',))
     def test_form_in_context(self):
         """Test if the login form contains a proper password field."""
         response = self.client.get(self.locked_url)
         form = response.context['form']
         self.failUnless('password' in form.fields)
 
-    @patch('lockdown.tests.tests.settings.ENABLED', False)
+    @patch('lockdown.tests.tests.middleware.settings.ENABLED', False)
     def test_global_disable(self):
         """Test that a page isn't locked when LOCKDOWN_ENABLED=False."""
         response = self.client.get(self.locked_url)
         self.assertEqual(response.content, self.locked_contents)
 
-    @patch('lockdown.tests.tests.settings.URL_EXCEPTIONS', (r'/view/$',))
+    @patch('lockdown.tests.tests.middleware.settings.URL_EXCEPTIONS',
+           (r'/view/$',))
     def test_url_exceptions(self):
         """Test that a page isn't locked when its URL is in the exception list.
 
@@ -56,20 +57,20 @@ class BaseTests(TestCase):
         response = self.client.get(self.locked_url)
         self.assertEqual(response.content, self.locked_contents)
 
-    @patch('lockdown.tests.tests.settings.PASSWORDS', ('letmein',))
+    @patch('lockdown.tests.tests.middleware.settings.PASSWORDS', ('letmein',))
     def test_submit_password(self):
         """Test that access to locked content works with a correct password."""
         response = self.client.post(self.locked_url, {'password': 'letmein'},
                                     follow=True)
         self.assertEqual(response.content, self.locked_contents)
 
-    @patch('lockdown.tests.tests.settings.PASSWORDS', ('letmein',))
+    @patch('lockdown.tests.tests.middleware.settings.PASSWORDS', ('letmein',))
     def test_submit_wrong_password(self):
         """Test access to locked content is denied for wrong passwords."""
         response = self.client.post(self.locked_url, {'password': 'imacrook'})
         self.assertContains(response, 'Incorrect password.')
 
-    @patch('lockdown.tests.tests.settings.FORM',
+    @patch('lockdown.tests.tests.middleware.settings.FORM',
            'lockdown.tests.forms.CustomLockdownForm')
     def test_custom_form(self):
         """Test if access using a custom lockdown form works."""
@@ -97,11 +98,13 @@ class BaseTests(TestCase):
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        with patch('lockdown.tests.tests.settings.UNTIL_DATE', tomorrow):
+        with patch('lockdown.tests.tests.middleware.settings.UNTIL_DATE',
+                   tomorrow):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        with patch('lockdown.tests.tests.settings.UNTIL_DATE', yesterday):
+        with patch('lockdown.tests.tests.middleware.settings.UNTIL_DATE',
+                   yesterday):
             response = self.client.get(self.locked_url)
             self.assertEqual(response.content, self.locked_contents)
 
@@ -110,11 +113,13 @@ class BaseTests(TestCase):
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        with patch('lockdown.tests.tests.settings.AFTER_DATE', yesterday):
+        with patch('lockdown.tests.tests.middleware.settings.AFTER_DATE',
+                   yesterday):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        with patch('lockdown.tests.tests.settings.AFTER_DATE', tomorrow):
+        with patch('lockdown.tests.tests.middleware.settings.AFTER_DATE',
+                   tomorrow):
             response = self.client.get(self.locked_url)
             self.assertEqual(response.content, self.locked_contents)
 
@@ -123,18 +128,24 @@ class BaseTests(TestCase):
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        with patch('lockdown.tests.tests.settings.UNTIL_DATE', yesterday),\
-                patch('lockdown.tests.tests.settings.AFTER_DATE', yesterday):
+        with patch('lockdown.tests.tests.middleware.settings.UNTIL_DATE',
+                   yesterday),\
+                patch('lockdown.tests.tests.middleware.settings.AFTER_DATE',
+                      yesterday):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        with patch('lockdown.tests.tests.settings.UNTIL_DATE', tomorrow), \
-                patch('lockdown.tests.tests.settings.AFTER_DATE', tomorrow):
+        with patch('lockdown.tests.tests.middleware.settings.UNTIL_DATE',
+                   tomorrow), \
+                patch('lockdown.tests.tests.middleware.settings.AFTER_DATE',
+                      tomorrow):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        with patch('lockdown.tests.tests.settings.UNTIL_DATE', yesterday), \
-                patch('lockdown.tests.tests.settings.AFTER_DATE', tomorrow):
+        with patch('lockdown.tests.tests.middleware.settings.UNTIL_DATE',
+                   yesterday), \
+                patch('lockdown.tests.tests.middleware.settings.AFTER_DATE',
+                      tomorrow):
             response = self.client.get(self.locked_url)
             self.assertEqual(response.content, self.locked_contents)
 
