@@ -10,7 +10,7 @@ import django
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
-from lockdown import middleware
+from lockdown import middleware, settings
 from lockdown.forms import AuthForm
 
 
