@@ -1,13 +1,13 @@
 from setuptools import find_packages, setup
 
-long_description = '\n'.join([open('README.rst').read(),
+LONG_DESCRIPTION = '\n'.join([open('README.rst').read(),
                               open('CHANGES.rst').read()])
 setup(
     name='django-lockdown',
     version='1.3',
     description=('Lock down a Django site or individual views, with '
                  'configurable preview authorization'),
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     author='Carl Meyer',
     author_email='carl@dirtcircle.com',
     maintainer='Daniel Roschka',

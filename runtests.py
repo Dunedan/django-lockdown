@@ -17,8 +17,7 @@ def runtests(*test_args):
     if not test_args:
         test_args = ['lockdown.tests']
 
-    TestRunner = get_runner(settings)
-    test_runner = TestRunner()
+    test_runner = get_runner(settings)()
     failures = test_runner.run_tests(test_args)
     sys.exit(bool(failures))
 

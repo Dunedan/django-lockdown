@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings as django_settings
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -57,7 +58,6 @@ class AuthForm(AuthenticationForm):
     def __init__(self, staff_only=None, superusers_only=None, *args,
                  **kwargs):
         """Initialize the form by setting permissions needed for access."""
-        from django.conf import settings as django_settings
         super(AuthForm, self).__init__(*args, **kwargs)
         if staff_only is None:
             staff_only = getattr(django_settings,

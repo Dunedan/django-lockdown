@@ -21,14 +21,14 @@ if parse_version(django.get_version()) < parse_version('1.10'):
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware'
-        )
+    )
 else:
     MIDDLEWARE = [
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware'
-        ]
+    ]
 
 INSTALLED_APPS = (
     'django.contrib.sessions',
