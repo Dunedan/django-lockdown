@@ -48,8 +48,11 @@ Dependencies
 
 ``django-lockdown`` requires `Python`_ 2.7 or later and `Django`_ 1.11 or later.
 
+As an alternative to CPython `PyPy`_ 3.5 is supported as well.
+
 .. _Python: https://www.python.org/
 .. _Django: https://www.djangoproject.com/
+.. _PyPy: https://pypy.org/
 
 Usage
 =====

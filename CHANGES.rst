@@ -16,6 +16,8 @@ tip (unreleased)
 
 - Add support for Python 3.7.
 
+- Add support for PyPy.
+
 1.5.0 (2017-12-05)
 ------------------
 
