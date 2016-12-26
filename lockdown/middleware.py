@@ -16,8 +16,6 @@ def compile_url_exceptions(url_exceptions):
     """
     return [re.compile(p) for p in url_exceptions]
 
-_default_url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
-
 
 def get_lockdown_form(form_path):
     """Return a form class for a given string pointing to a lockdown form."""
@@ -39,8 +37,6 @@ def get_lockdown_form(form_path):
                                    ' (%s) doesn\'t define a "%s" form.'
                                    % (module, attr))
     return form
-
-_default_form = get_lockdown_form(settings.FORM)
 
 
 class LockdownMiddleware(object):
@@ -86,10 +82,10 @@ class LockdownMiddleware(object):
             return None
 
         # Don't lock down if the URL matches an exception pattern.
-        if self.url_exceptions is None:
-            url_exceptions = _default_url_exceptions
-        else:
+        if self.url_exceptions:
             url_exceptions = compile_url_exceptions(self.url_exceptions)
+        else:
+            url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
         for pattern in url_exceptions:
             if pattern.search(request.path):
                 return None
@@ -113,10 +109,10 @@ class LockdownMiddleware(object):
                 return None
 
         form_data = request.method == 'POST' and request.POST or None
-        if self.form is None:
-            form_class = _default_form
-        else:
+        if self.form:
             form_class = self.form
+        else:
+            form_class = get_lockdown_form(settings.FORM)
         form = form_class(data=form_data, **self.form_kwargs)
 
         authorized = False

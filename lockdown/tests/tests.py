@@ -1,4 +1,8 @@
 import datetime
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 from pkg_resources import parse_version
 
@@ -10,29 +14,7 @@ from lockdown import middleware, settings
 from lockdown.forms import AuthForm
 
 
-class LockdownTestCase(TestCase):
-
-    """Base class for the other tests, setting up a proper test environment."""
-
-    urls = 'lockdown.tests.urls'
-
-    def setUp(self):
-        """Basic setup for all tests."""
-        self._old_pw = settings.PASSWORDS
-        settings.PASSWORDS = ('letmein',)
-
-        self._old_form = settings.FORM
-        settings.FORM = 'lockdown.forms.LockdownForm'
-        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
-
-    def tearDown(self):
-        """Tearing down all settings made for the tests after running them."""
-        settings.PASSWORDS = self._old_pw
-        settings.FORM = self._old_form
-        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
-
-
-class BaseTests(LockdownTestCase):
+class BaseTests(TestCase):
 
     """Base tests for lockdown functionality.
 
@@ -43,71 +25,57 @@ class BaseTests(LockdownTestCase):
     attributes.
     """
 
+    locked_url = '/locked/view/'
+    locked_contents = b'A locked view.'
+
     def test_lockdown_template_used(self):
         """Test if the login form template is used on locked pages."""
         response = self.client.get(self.locked_url)
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
+    @patch('lockdown.tests.tests.settings.PASSWORDS', ('letmein',))
     def test_form_in_context(self):
         """Test if the login form contains a proper password field."""
         response = self.client.get(self.locked_url)
         form = response.context['form']
         self.failUnless('password' in form.fields)
 
+    @patch('lockdown.tests.tests.settings.ENABLED', False)
     def test_global_disable(self):
         """Test that a page isn't locked when LOCKDOWN_ENABLED=False."""
-        _old_enabled = settings.ENABLED
-        settings.ENABLED = False
-        try:
-            response = self.client.get(self.locked_url)
-            self.assertEqual(response.content, self.locked_contents)
-        finally:
-            settings.ENABLED = _old_enabled
+        response = self.client.get(self.locked_url)
+        self.assertEqual(response.content, self.locked_contents)
 
+    @patch('lockdown.tests.tests.settings.URL_EXCEPTIONS', (r'/view/$',))
     def test_url_exceptions(self):
         """Test that a page isn't locked when its URL is in the exception list.
 
         The excepted URLs are determinated by the
         LOCKDOWN_URL_EXCEPTIONS setting.
         """
-        _old_url_exceptions = settings.URL_EXCEPTIONS
-        settings.URL_EXCEPTIONS = (r'/view/$',)
-        middleware._default_url_exceptions = \
-            middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
+        response = self.client.get(self.locked_url)
+        self.assertEqual(response.content, self.locked_contents)
 
-        try:
-            response = self.client.get(self.locked_url)
-            self.assertEqual(response.content, self.locked_contents)
-        finally:
-            settings.URL_EXCEPTIONS = _old_url_exceptions
-            middleware._default_url_exceptions = \
-                middleware.compile_url_exceptions(settings.URL_EXCEPTIONS)
-
+    @patch('lockdown.tests.tests.settings.PASSWORDS', ('letmein',))
     def test_submit_password(self):
         """Test that access to locked content works with a correct password."""
         response = self.client.post(self.locked_url, {'password': 'letmein'},
                                     follow=True)
         self.assertEqual(response.content, self.locked_contents)
 
+    @patch('lockdown.tests.tests.settings.PASSWORDS', ('letmein',))
     def test_submit_wrong_password(self):
         """Test access to locked content is denied for wrong passwords."""
         response = self.client.post(self.locked_url, {'password': 'imacrook'})
         self.assertContains(response, 'Incorrect password.')
 
+    @patch('lockdown.tests.tests.settings.FORM',
+           'lockdown.tests.forms.CustomLockdownForm')
     def test_custom_form(self):
         """Test if access using a custom lockdown form works."""
-        _old_form = settings.FORM
-        settings.FORM = 'lockdown.tests.forms.CustomLockdownForm'
-        middleware._default_form = middleware.get_lockdown_form(settings.FORM)
-
-        try:
-            response = self.client.post(self.locked_url, {'answer': '42'},
-                                        follow=True)
-            self.assertEqual(response.content, self.locked_contents)
-        finally:
-            settings.FORM = _old_form
-            middleware._default_form = middleware.get_lockdown_form(
-                settings.FORM)
+        response = self.client.post(self.locked_url, {'answer': '42'},
+                                    follow=True)
+        self.assertEqual(response.content, self.locked_contents)
 
     def test_invalid_custom_form(self):
         """Test that pointing to an invalid form properly produces an error."""
@@ -126,63 +94,49 @@ class BaseTests(LockdownTestCase):
 
     def test_locked_until(self):
         """Test locking until a certain date."""
-        _old_until_date = settings.UNTIL_DATE
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        try:
-            settings.UNTIL_DATE = tomorrow
+        with patch('lockdown.tests.tests.settings.UNTIL_DATE', tomorrow):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            settings.UNTIL_DATE = yesterday
+        with patch('lockdown.tests.tests.settings.UNTIL_DATE', yesterday):
             response = self.client.get(self.locked_url)
             self.assertEqual(response.content, self.locked_contents)
-        finally:
-            settings.UNTIL_DATE = _old_until_date
 
     def test_locked_after(self):
         """Test locking starting at a certain date."""
-        _old_after_date = settings.AFTER_DATE
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        try:
-            settings.AFTER_DATE = yesterday
+        with patch('lockdown.tests.tests.settings.AFTER_DATE', yesterday):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            settings.AFTER_DATE = tomorrow
+        with patch('lockdown.tests.tests.settings.AFTER_DATE', tomorrow):
             response = self.client.get(self.locked_url)
             self.assertEqual(response.content, self.locked_contents)
-        finally:
-            settings.AFTER_DATE = _old_after_date
 
     def test_locked_until_and_after(self):
         """Test locking until a certain date and starting at another date."""
-        _old_until_date = settings.UNTIL_DATE
-        _old_after_date = settings.AFTER_DATE
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        try:
-            settings.UNTIL_DATE = yesterday
-            settings.AFTER_DATE = yesterday
+        with patch('lockdown.tests.tests.settings.UNTIL_DATE', yesterday),\
+                patch('lockdown.tests.tests.settings.AFTER_DATE', yesterday):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            settings.UNTIL_DATE = tomorrow
-            settings.AFTER_DATE = tomorrow
+        with patch('lockdown.tests.tests.settings.UNTIL_DATE', tomorrow), \
+                patch('lockdown.tests.tests.settings.AFTER_DATE', tomorrow):
             response = self.client.get(self.locked_url)
             self.assertTemplateUsed(response, 'lockdown/form.html')
 
-            settings.UNTIL_DATE = yesterday
-            settings.AFTER_DATE = tomorrow
+        with patch('lockdown.tests.tests.settings.UNTIL_DATE', yesterday), \
+                patch('lockdown.tests.tests.settings.AFTER_DATE', tomorrow):
             response = self.client.get(self.locked_url)
             self.assertEqual(response.content, self.locked_contents)
-        finally:
-            settings.UNTIL_DATE = _old_until_date
-            settings.AFTER_DATE = _old_after_date
 
     def test_missing_session_middleware(self):
         """Test behavior with missing session middleware.
@@ -212,9 +166,6 @@ class BaseTests(LockdownTestCase):
 class DecoratorTests(BaseTests):
 
     """Tests for using lockdown via decorators."""
-
-    locked_url = '/locked/view/'
-    locked_contents = b'A locked view.'
 
     def test_overridden_password(self):
         """Test that locking works when overriding the password."""
@@ -304,7 +255,7 @@ class MiddlewareTests(BaseTests):
         super(MiddlewareTests, self).tearDown()
 
 
-class AuthFormTests(LockdownTestCase):
+class AuthFormTests(TestCase):
 
     """Tests for using the auth form for previewing locked pages."""
 

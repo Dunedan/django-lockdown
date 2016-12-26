@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+tip (unreleased)
+----------------
+
+- Refactor tests to use Mocks
+
+
 1.3 (2016-08-07)
 ----------------
 
