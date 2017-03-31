@@ -10,6 +10,8 @@ tip (unreleased)
 
 - Add the ability to bypass the lockdown for configured IP-addresses.
 
+- Integrate pre-commit for code style checks during commit and CI.
+
 1.5.0 (2017-12-05)
 ------------------
 

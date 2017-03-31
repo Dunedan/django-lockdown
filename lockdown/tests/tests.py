@@ -1,18 +1,19 @@
 import datetime
+
+from django.conf import settings as django_settings
+from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase
+
+from lockdown import middleware
+from lockdown.forms import AuthForm
+
 try:
     from unittest.mock import patch
 except ImportError:
     from mock import patch
 
-from django.conf import settings as django_settings
-from django.core.exceptions import ImproperlyConfigured
-from django.test import TestCase
-from lockdown import middleware
-from lockdown.forms import AuthForm
-
 
 class BaseTests(TestCase):
-
     """Base tests for lockdown functionality.
 
     These base tests are used for testing lockdowns decorator and middleware
@@ -56,8 +57,8 @@ class BaseTests(TestCase):
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
            ['192.168.0.1'])
-    def test_remote_addr_exception_lock(self):
-        """Test that a page is locked when client IP is not in exception list
+    def test_remote_addr_exc_lock(self):
+        """Test that a page is locked when client IP is not in exception list.
 
         The excepted IP are determined by the
         LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
@@ -68,8 +69,8 @@ class BaseTests(TestCase):
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
            ['192.168.0.1'])
-    def test_remote_addr_exception_unlock(self):
-        """Test that a page isn't locked when client IP is in exception list
+    def test_remote_addr_exc_unlock(self):
+        """Test that a page isn't locked when client IP is in exception list.
 
         The excepted IP are determined by the
         LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
@@ -189,7 +190,6 @@ class BaseTests(TestCase):
 
 
 class DecoratorTests(BaseTests):
-
     """Tests for using lockdown via decorators."""
 
     def test_overridden_password(self):
@@ -215,13 +215,15 @@ class DecoratorTests(BaseTests):
         self.assertEqual(response.content, self.locked_contents)
 
     def test_overridden_ip_exceptions(self):
-        """Test that locking works when overriding the remote_addr exceptions."""
+        """Test that locking works with overwritten remote_addr exceptions."""
         url = '/locked/view/with/ip_exception1/'
-        response = self.client.post(url, REMOTE_ADDR='192.168.0.100', follow=True)
+        response = self.client.post(url, REMOTE_ADDR='192.168.0.100',
+                                    follow=True)
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
         url = '/locked/view/with/ip_exception1/'
-        response = self.client.post(url, REMOTE_ADDR='192.168.0.1', follow=True)
+        response = self.client.post(url, REMOTE_ADDR='192.168.0.1',
+                                    follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
         self.assertEqual(response.content, self.locked_contents)
 
@@ -262,7 +264,6 @@ class DecoratorTests(BaseTests):
 
 
 class MiddlewareTests(BaseTests):
-
     """Tests for using lockdown via its middleware."""
 
     locked_url = '/a/view/'
@@ -283,7 +284,6 @@ class MiddlewareTests(BaseTests):
 
 
 class AuthFormTests(TestCase):
-
     """Tests for using the auth form for previewing locked pages."""
 
     def test_using_form(self):
@@ -298,7 +298,7 @@ class AuthFormTests(TestCase):
         form = response.context['form']
         self.assertTrue(isinstance(form, AuthForm))
 
-    def add_user(self, username='test', password='pw', **kwargs):
+    def add_user(self, username='test', password='pw', **kwargs):  # nosec
         """Add a user used for testing the auth form."""
         from django.contrib.auth.models import User
         user = User(username=username, **kwargs)

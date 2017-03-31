@@ -11,8 +11,8 @@ env:
 install:
   - pip install $DJANGO
   - pip install coveralls
-script:
-  - coverage run runtests.py
+  - pip install pre-commit
+script: pre-commit run --all-files && coverage run runtests.py
 matrix:
   exclude:
     - python: "2.7"

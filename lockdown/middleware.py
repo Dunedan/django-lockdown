@@ -39,14 +39,15 @@ def get_lockdown_form(form_path):
     return form
 
 
+# pylint: disable=too-many-instance-attributes
 class LockdownMiddleware(object):
-
     """Middleware to lock down a whole Django site."""
 
     # pylint: disable=too-many-arguments
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
-                 url_exceptions=None, remote_addr_exceptions=None, extra_context=None, **form_kwargs):
+                 url_exceptions=None, remote_addr_exceptions=None,
+                 extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
@@ -64,6 +65,7 @@ class LockdownMiddleware(object):
         self.extra_context = extra_context
 
     def __call__(self, request):
+        """Handle calls to the class instance."""
         response = self.process_request(request)
 
         if not response:
@@ -71,6 +73,8 @@ class LockdownMiddleware(object):
 
         return response
 
+    # pylint: disable=too-many-locals,too-many-return-statements
+    # pylint: disable=too-many-statements,too-many-branches
     def process_request(self, request):
         """Check if each request is allowed to access the current resource."""
         try:
@@ -167,7 +171,7 @@ class LockdownMiddleware(object):
         return render(request, 'lockdown/form.html', page_data)
 
     def redirect(self, request):
-        """Utility method to handle redirects."""
+        """Handle redirects properly."""
         url = request.path
         querystring = request.GET.copy()
         if self.logout_key and self.logout_key in request.GET:

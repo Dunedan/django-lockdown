@@ -1,0 +1,58 @@
+---
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  sha: v1.2.1
+  hooks:
+    - id: check-added-large-files
+    - id: check-ast
+    - id: check-byte-order-marker
+    - id: check-case-conflict
+    - id: check-merge-conflict
+    - id: check-symlinks
+    - id: check-yaml
+    - id: debug-statements
+    - id: detect-aws-credentials
+      args:
+        - --allow-missing-credentials
+    - id: detect-private-key
+
+- repo: git://github.com/adrienverge/yamllint
+  sha: v1.11.0
+  hooks:
+    - id: yamllint
+      args:
+        - -s
+
+- repo: git://github.com/FalconSocial/pre-commit-python-sorter
+  sha: b57843b0b874df1d16eb0bef00b868792cb245c2
+  hooks:
+    - id: python-import-sorter
+      args:
+        - --check-only
+        - --diff
+
+- repo: git://github.com/guykisel/prospector-mirror
+  sha: b27f281eb9398fc8504415d7fbdabf119ea8c5e1
+  hooks:
+    - id: prospector
+      additional_dependencies:
+        - django
+        - prospector==0.12.7
+
+- repo: git://github.com/Lucas-C/pre-commit-hooks
+  sha: v1.1.4
+  hooks:
+    - id: forbid-crlf
+    - id: forbid-tabs
+
+- repo: git://github.com/Lucas-C/pre-commit-hooks-bandit
+  sha: v1.0.3
+  hooks:
+    - id: python-bandit-vulnerability-check
+      args:
+        - -l
+      files: .py$
+
+- repo: git://github.com/Lucas-C/pre-commit-hooks-safety
+  sha: v1.1.0
+  hooks:
+    - id: python-safety-dependencies-check

@@ -15,4 +15,8 @@ pep8:
 pep257:
   disable:
     - D100
+    - D104
+    - D203
     - D213
+mccabe:
+  run: false

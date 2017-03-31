@@ -7,11 +7,11 @@ from lockdown import settings
 
 
 class LockdownForm(forms.Form):
-
     """Defines a form to enter a password for accessing locked down content."""
 
     password = forms.CharField(widget=forms.PasswordInput(render_value=False))
 
+    # pylint: disable=keyword-arg-before-vararg
     def __init__(self, passwords=None, *args, **kwargs):
         """Initialize the form by setting the valid passwords."""
         super(LockdownForm, self).__init__(*args, **kwargs)
@@ -48,13 +48,13 @@ class LockdownForm(forms.Form):
 
 
 class AuthForm(AuthenticationForm):
-
     """Defines a form using Djangos authentication to access locked content.
 
     This form is a sample implementation of how to use a custom form to provide
     access to locked down content.
     """
 
+    # pylint: disable=keyword-arg-before-vararg
     def __init__(self, staff_only=None, superusers_only=None, *args,
                  **kwargs):
         """Initialize the form by setting permissions needed for access."""

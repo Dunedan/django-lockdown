@@ -2,7 +2,6 @@ from django import forms
 
 
 class CustomLockdownForm(forms.Form):
-
     """A form to test the behavior of using custom forms for authentication."""
 
     answer = forms.IntegerField()
