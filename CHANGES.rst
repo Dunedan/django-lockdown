@@ -8,6 +8,8 @@ tip (unreleased)
 
 - Add support for Python 3.6
 
+- Add support for Django 1.11
+
 
 1.3 (2016-08-07)
 ----------------
