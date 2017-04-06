@@ -4,6 +4,9 @@ CHANGES
 tip (unreleased)
 ----------------
 
+1.4.0 (2017-04-06)
+----------------
+
 - Refactor tests to use Mocks
 
 - Add support for Python 3.6
