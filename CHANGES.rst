@@ -4,14 +4,20 @@ CHANGES
 tip (unreleased)
 ----------------
 
-1.4.1 (2017-04-06)
-----------------
+1.4.2 (2017-04-07)
+------------------
+
+- Fix formatting for PyPi
+
+
+1.4.1 (2017-04-07)
+------------------
 
 - Fix problem with upload for PyPi
 
 
 1.4.0 (2017-04-06)
-----------------
+------------------
 
 - Refactor tests to use Mocks
 
