@@ -4,6 +4,12 @@ CHANGES
 tip (unreleased)
 ----------------
 
+1.4.1 (2017-04-06)
+----------------
+
+- Fix problem with upload for PyPi
+
+
 1.4.0 (2017-04-06)
 ----------------
 
