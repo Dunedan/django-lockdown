@@ -4,6 +4,8 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Add support for Django 2.0
+
 1.4.2 (2017-04-07)
 ------------------
 
