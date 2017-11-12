@@ -91,14 +91,16 @@ class LockdownMiddleware(object):
                 return None
 
         # Don't lock down if outside of the lockdown dates.
-        if self.until_date is None:
-            until_date = settings.UNTIL_DATE
-        else:
+        if self.until_date:
             until_date = self.until_date
-        if self.after_date is None:
-            after_date = settings.AFTER_DATE
         else:
+            until_date = settings.UNTIL_DATE
+
+        if self.after_date:
             after_date = self.after_date
+        else:
+            after_date = settings.AFTER_DATE
+
         if until_date or after_date:
             locked_date = False
             if until_date and datetime.datetime.now() < until_date:
@@ -149,7 +151,7 @@ class LockdownMiddleware(object):
         if not hasattr(form, 'show_form') or form.show_form():
             page_data['form'] = form
 
-        if self.extra_context is not None:
+        if self.extra_context:
             page_data.update(self.extra_context)
 
         return render(request, 'lockdown/form.html', page_data)
