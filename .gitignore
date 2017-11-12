@@ -1,6 +1,7 @@
 dist/*
 django_lockdown.egg-info/*
 build/*
+.idea
 *.pyc
 .project
 .pydevproject
