@@ -128,11 +128,8 @@ class LockdownMiddleware(object):
         if authorized and self.logout_key and self.logout_key in request.GET:
             if self.session_key in session:
                 del session[self.session_key]
-            url = request.path
             querystring = request.GET.copy()
             del querystring[self.logout_key]
-            if querystring:
-                url = '%s?%s' % (url, querystring.urlencode())
             return self.redirect(request)
 
         # Don't lock down if the user is already authorized for previewing.
