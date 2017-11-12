@@ -38,7 +38,7 @@ class BaseTests(TestCase):
         """Test if the login form contains a proper password field."""
         response = self.client.get(self.locked_url)
         form = response.context['form']
-        self.failUnless('password' in form.fields)
+        self.assertTrue('password' in form.fields)
 
     @patch('lockdown.tests.tests.middleware.settings.ENABLED', False)
     def test_global_disable(self):
@@ -233,7 +233,7 @@ class DecoratorTests(BaseTests):
         """Test that locking works when overriding the extra context."""
         url = '/locked/view/with/extra/context/'
         response = self.client.get(url)
-        self.failUnless('foo' in response.context)
+        self.assertTrue('foo' in response.context)
 
 
 class MiddlewareTests(BaseTests):
@@ -280,7 +280,7 @@ class AuthFormTests(TestCase):
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
         form = response.context['form']
-        self.failUnless(isinstance(form, AuthForm))
+        self.assertTrue(isinstance(form, AuthForm))
 
     def add_user(self, username='test', password='pw', **kwargs):
         """Add a user used for testing the auth form."""
