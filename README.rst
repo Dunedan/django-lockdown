@@ -33,6 +33,9 @@ Install from PyPI with ``easy_install`` or ``pip``::
 To use ``django-lockdown`` in your Django project:
 
 1. Add ``'lockdown'`` to your ``INSTALLED_APPS``.
+   If you want to use one of ``django-lockdowns`` default lock down forms,
+   you'll additionally have to ensure that you have enabled
+   ``django.contrib.auth`` as part of to your ``INSTALLED_APPS``.
 
 2. To enable admin preview of locked-down sites or views with
    passwords, set the `LOCKDOWN_PASSWORDS`_ setting to a tuple of one or
