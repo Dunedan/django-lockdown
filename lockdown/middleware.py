@@ -110,7 +110,7 @@ class LockdownMiddleware(object):
             if not locked_date:
                 return None
 
-        form_data = request.method == 'POST' and request.POST or None
+        form_data = request.POST if request.method == 'POST' else None
         if self.form:
             form_class = self.form
         else:

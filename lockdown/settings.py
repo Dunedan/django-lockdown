@@ -10,4 +10,4 @@ UNTIL_DATE = getattr(settings, 'LOCKDOWN_UNTIL', None)
 AFTER_DATE = getattr(settings, 'LOCKDOWN_AFTER', None)
 
 if not isinstance(PASSWORDS, (tuple, list)):
-    PASSWORDS = PASSWORDS and (PASSWORDS,) or ()
+    PASSWORDS = (PASSWORDS, ) if PASSWORDS else ()
