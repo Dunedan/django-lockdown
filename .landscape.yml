@@ -1,6 +1,7 @@
+---
 strictness: veryhigh
-doc-warnings: yes
-test-warnings: yes
+doc-warnings: "yes"
+test-warnings: "yes"
 uses:
   - django
 pylint:
