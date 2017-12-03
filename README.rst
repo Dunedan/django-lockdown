@@ -14,10 +14,6 @@ django-lockdown
 .. image:: https://img.shields.io/pypi/v/django-lockdown.svg
     :target: https://pypi.python.org/pypi/django-lockdown/
     :alt: Latest Version
-.. image:: https://img.shields.io/pypi/dm/django-lockdown.svg
-    :target: https://pypi.python.org/pypi/django-lockdown/
-    :alt: Downloads
-
 
 ``django-lockdown`` is a reusable Django application for locking down an entire
 site (or particular views), with customizable date ranges and preview
