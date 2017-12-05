@@ -4,7 +4,12 @@ CHANGES
 tip (unreleased)
 ----------------
 
+1.5.0 (2017-12-05)
+------------------
+
 - Add support for Django 2.0
+
+- Improve the code style in some areas
 
 1.4.2 (2017-04-07)
 ------------------
