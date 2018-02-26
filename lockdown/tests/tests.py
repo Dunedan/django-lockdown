@@ -57,6 +57,28 @@ class BaseTests(TestCase):
         response = self.client.get(self.locked_url)
         self.assertEqual(response.content, self.locked_contents)
 
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ('192.168.0.1',))
+    def test_remote_addr_exception_lock(self):
+        """Test that a page isn't locked when client IP is in exception list
+
+        The excepted IP are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
+        """
+        response = self.client.get(self.locked_url, REMOTE_ADDR='192.168.0.100')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ('192.168.0.1',))
+    def test_remote_addr_exception_unlock(self):
+        """Test that a page isn't locked when client IP is in exception list
+
+        The excepted IP are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
+        """
+        response = self.client.get(self.locked_url, REMOTE_ADDR='192.168.0.1')
+        self.assertEqual(response.content, self.locked_contents)
+
     @patch('lockdown.tests.tests.middleware.settings.PASSWORDS', ('letmein',))
     def test_submit_password(self):
         """Test that access to locked content works with a correct password."""
@@ -197,6 +219,17 @@ class DecoratorTests(BaseTests):
 
         url = '/locked/view/with/exception2/'
         response = self.client.post(url, follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+    def test_overridden_ip_exceptions(self):
+        """Test that locking works when overriding the remote_addr exceptions."""
+        url = '/locked/view/with/ip_exception1/'
+        response = self.client.post(url, REMOTE_ADDR='192.168.0.100', follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+        url = '/locked/view/with/ip_exception1/'
+        response = self.client.post(url, REMOTE_ADDR='192.168.0.1', follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
         self.assertEqual(response.content, self.locked_contents)
 

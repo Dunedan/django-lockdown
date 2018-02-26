@@ -164,6 +164,16 @@ locked. For example::
         r'\.json$',   # unlock JSON API
     )
 
+LOCKDOWN_REMOTE_ADDR_EXCEPTIONS
+-------------------------------
+An optional list/tuple of IPv4 addresses to be matched agains incomming
+ `requests.META['REMOTE_ADDR']`. If IP is in this list, it will not be locked. For example::
+
+    LOCKDOWN_REMOTE_ADDR = (
+        '192.168.0.1',
+        '127.0.0.1',
+    )
+
 LOCKDOWN_UNTIL
 --------------
 

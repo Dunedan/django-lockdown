@@ -45,7 +45,7 @@ class LockdownMiddleware(object):
 
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
-                 url_exceptions=None, extra_context=None, **form_kwargs):
+                 url_exceptions=None, remote_addr_exceptions=None, extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
@@ -59,6 +59,7 @@ class LockdownMiddleware(object):
         self.logout_key = logout_key
         self.session_key = session_key
         self.url_exceptions = url_exceptions
+        self.remote_addr_exceptions = remote_addr_exceptions
         self.extra_context = extra_context
 
     def __call__(self, request):
@@ -80,6 +81,16 @@ class LockdownMiddleware(object):
         # Don't lock down if django-lockdown is disabled altogether.
         if settings.ENABLED is False:
             return None
+
+        # Don't lock down if the client REMOTE_ADDR matched and exception
+        if self.remote_addr_exceptions:
+            remote_addr_exceptions = self.remote_addr_exceptions
+        else:
+            remote_addr_exceptions = settings.REMOTE_ADDR_EXCEPTIONS
+
+        if remote_addr_exceptions:
+            if request.META.get('REMOTE_ADDR') in remote_addr_exceptions:
+                return None
 
         # Don't lock down if the URL matches an exception pattern.
         if self.url_exceptions:
