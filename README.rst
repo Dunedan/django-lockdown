@@ -166,7 +166,7 @@ locked. For example::
 
 LOCKDOWN_REMOTE_ADDR_EXCEPTIONS
 -------------------------------
-An optional list/tuple of IPv4 addresses to be matched agains incomming
+An optional list addresses to be matched agains incomming
  `requests.META['REMOTE_ADDR']`. If IP is in this list, it will not be locked. For example::
 
     LOCKDOWN_REMOTE_ADDR = (

@@ -47,7 +47,7 @@ class BaseTests(TestCase):
         self.assertEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.URL_EXCEPTIONS',
-           (r'/view/$',))
+           [r'/view/$'])
     def test_url_exceptions(self):
         """Test that a page isn't locked when its URL is in the exception list.
 
@@ -58,9 +58,9 @@ class BaseTests(TestCase):
         self.assertEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
-           ('192.168.0.1',))
+           ['192.168.0.1'])
     def test_remote_addr_exception_lock(self):
-        """Test that a page isn't locked when client IP is in exception list
+        """Test that a page is locked when client IP is not in exception list
 
         The excepted IP are determined by the
         LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
@@ -69,7 +69,7 @@ class BaseTests(TestCase):
         self.assertNotEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
-           ('192.168.0.1',))
+           ['192.168.0.1'])
     def test_remote_addr_exception_unlock(self):
         """Test that a page isn't locked when client IP is in exception list
 
