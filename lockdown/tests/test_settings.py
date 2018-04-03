@@ -1,9 +1,5 @@
 from random import choice
 
-from pkg_resources import parse_version
-
-import django
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3'
@@ -14,21 +10,12 @@ SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz'
                              '0123456789!@#$%^&*(-_=+)')
                       for i in range(64)])
 
-# Handle differences in the configuration of old- and new-style middlewares.
-if parse_version(django.get_version()) < parse_version('1.10'):
-    MIDDLEWARE_CLASSES = (
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware'
-    )
-else:
-    MIDDLEWARE = [
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware'
-    ]
+MIDDLEWARE = [
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware'
+]
 
 INSTALLED_APPS = (
     'django.contrib.sessions',

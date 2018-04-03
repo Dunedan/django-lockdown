@@ -46,7 +46,7 @@ the `LOCKDOWN_FORM`_ setting.
 Dependencies
 ------------
 
-``django-lockdown`` requires `Python`_ 2.7 or later and `Django`_ 1.8 or later.
+``django-lockdown`` requires `Python`_ 2.7 or later and `Django`_ 1.11 or later.
 
 .. _Python: https://www.python.org/
 .. _Django: https://www.djangoproject.com/
@@ -57,24 +57,13 @@ Usage
 Using the middleware
 --------------------
 
-To lock down the entire site, add the lockdown middleware to your middlewares.
-How to set this setting depends on the Django version you're using.
-
-For Django 1.8 and 1.9 use::
-
-    MIDDLEWARE_CLASSES = (
-        # ...
-        'lockdown.middleware.LockdownMiddleware',
-    )
-
-For Django 1.10 and newer use::
+To lock down the entire site, add the lockdown middleware to your middlewares:
 
     MIDDLEWARE = [
         # ...
         'lockdown.middleware.LockdownMiddleware',
     ]
 
-    
 Optionally, you may also add URL regular expressions to a
 `LOCKDOWN_URL_EXCEPTIONS`_ setting.
 
@@ -249,4 +238,4 @@ before searching for templates included in ``django-lockdown``.
 In your overwritten template the lockdown preview form is available in the
 template context as ``form``.
 
-.. _loaders: https://docs.djangoproject.com/en/1.10/ref/templates/api/#template-loaders
+.. _loaders: https://docs.djangoproject.com/en/2.0/ref/templates/api/#template-loaders

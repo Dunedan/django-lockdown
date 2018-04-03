@@ -4,6 +4,10 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Drops support for Django <=1.10.
+
+- Drops support for Python 3.3.
+
 1.5.0 (2017-12-05)
 ------------------
 

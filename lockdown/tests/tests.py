@@ -4,9 +4,6 @@ try:
 except ImportError:
     from mock import patch
 
-from pkg_resources import parse_version
-
-import django
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
@@ -162,16 +159,10 @@ class BaseTests(TestCase):
             ]
         }
 
-        if parse_version(django.get_version()) < parse_version('1.10'):
-            with self.modify_settings(MIDDLEWARE_CLASSES=middleware_remove):
-                self.assertRaises(ImproperlyConfigured,
-                                  self.client.get,
-                                  self.locked_url)
-        else:
-            with self.modify_settings(MIDDLEWARE=middleware_remove):
-                self.assertRaises(ImproperlyConfigured,
-                                  self.client.get,
-                                  self.locked_url)
+        with self.modify_settings(MIDDLEWARE=middleware_remove):
+            self.assertRaises(ImproperlyConfigured,
+                              self.client.get,
+                              self.locked_url)
 
 
 class DecoratorTests(BaseTests):
@@ -246,23 +237,14 @@ class MiddlewareTests(BaseTests):
     def setUp(self):
         """Additional setup for middleware tests."""
         super(MiddlewareTests, self).setUp()
-        if parse_version(django.get_version()) < parse_version('1.10'):
-            self._old_middleware_classes = django_settings.MIDDLEWARE_CLASSES
-            django_settings.MIDDLEWARE_CLASSES += (
-                'lockdown.middleware.LockdownMiddleware',
-            )
-        else:
-            self._old_middleware_classes = django_settings.MIDDLEWARE
-            django_settings.MIDDLEWARE.append(
-                'lockdown.middleware.LockdownMiddleware',
-            )
+        self._old_middleware_classes = django_settings.MIDDLEWARE
+        django_settings.MIDDLEWARE.append(
+            'lockdown.middleware.LockdownMiddleware',
+        )
 
     def tearDown(self):
         """Additional tear down for middleware tests."""
-        if parse_version(django.get_version()) < parse_version('1.10'):
-            django_settings.MIDDLEWARE_CLASSES = self._old_middleware_classes
-        else:
-            django_settings.MIDDLEWARE = self._old_middleware_classes
+        django_settings.MIDDLEWARE = self._old_middleware_classes
         super(MiddlewareTests, self).tearDown()
 
 

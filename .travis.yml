@@ -2,14 +2,10 @@
 language: python
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
 env:
-  - DJANGO="Django>=1.8,<1.9"
-  - DJANGO="Django>=1.9,<1.10"
-  - DJANGO="Django>=1.10,<1.11"
   - DJANGO="Django>=1.11,<1.12"
   - DJANGO="Django>=2.0,<2.1"
 install:
@@ -19,15 +15,7 @@ script:
   - coverage run runtests.py
 matrix:
   exclude:
-    - python: "3.3"
-      env: DJANGO="Django>=1.9,<1.10"
-    - python: "3.3"
-      env: DJANGO="Django>=1.10,<1.11"
-    - python: "3.3"
-      env: DJANGO="Django>=1.11,<1.12"
     - python: "2.7"
-      env: DJANGO="Django>=2.0,<2.1"
-    - python: "3.3"
       env: DJANGO="Django>=2.0,<2.1"
     - python: "3.4"
       env: DJANGO="Django>=2.0,<2.1"
