@@ -6,7 +6,7 @@ DATABASES = {
     }
 }
 
-SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz'
+SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz'  # nosec
                              '0123456789!@#$%^&*(-_=+)')
                       for i in range(64)])
 

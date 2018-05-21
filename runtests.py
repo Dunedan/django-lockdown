@@ -9,7 +9,7 @@ from django.test.utils import get_runner
 
 
 def runtests(*test_args):
-    """Setup and run django-lockdowns test suite."""
+    """Set up and run django-lockdowns test suite."""
     os.environ['DJANGO_SETTINGS_MODULE'] = 'lockdown.tests.test_settings'
 
     django.setup()

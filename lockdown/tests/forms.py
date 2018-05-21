@@ -8,7 +8,7 @@ class CustomLockdownForm(forms.Form):
     answer = forms.IntegerField()
 
     def clean_answer(self):
-        """Cleaning of the answer field, by checking it's value."""
+        """Clean the answer field, by checking its value."""
         if self.cleaned_data['answer'] == 42:
             return 42
         raise forms.ValidationError('Wrong answer.')
