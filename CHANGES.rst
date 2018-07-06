@@ -14,6 +14,8 @@ tip (unreleased)
 
 - Added support for Django 2.1.
 
+- Add support for Python 3.7.
+
 1.5.0 (2017-12-05)
 ------------------
 
