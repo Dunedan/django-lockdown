@@ -32,6 +32,11 @@ def locked_view_with_exception(request):
     return HttpResponse('A locked view.')
 
 
+@lockdown(remote_addr_exceptions=('192.168.0.1',))
+def locked_view_with_ip_exception(request):
+    return HttpResponse('A locked view.')
+
+
 @lockdown(extra_context={'foo': 'bar'})
 def locked_view_with_extra_context(request):
     """View, locked by the decorator with extra context."""
