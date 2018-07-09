@@ -8,6 +8,8 @@ tip (unreleased)
 
 - Drops support for Python 3.3.
 
+- Add the ability to bypass the lockdown for configured IP-addresses.
+
 1.5.0 (2017-12-05)
 ------------------
 

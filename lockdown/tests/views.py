@@ -32,8 +32,9 @@ def locked_view_with_exception(request):
     return HttpResponse('A locked view.')
 
 
-@lockdown(remote_addr_exceptions=('192.168.0.1',))
+@lockdown(remote_addr_exceptions=['192.168.0.1'])
 def locked_view_with_ip_exception(request):
+    """View, locked except for the configured IP-address."""
     return HttpResponse('A locked view.')
 
 

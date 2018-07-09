@@ -83,15 +83,16 @@ class LockdownMiddleware(object):
         if settings.ENABLED is False:
             return None
 
-        # Don't lock down if the client REMOTE_ADDR matched and exception
+        # Don't lock down if the client REMOTE_ADDR matched and is part of the
+        # exception list.
         if self.remote_addr_exceptions:
             remote_addr_exceptions = self.remote_addr_exceptions
         else:
             remote_addr_exceptions = settings.REMOTE_ADDR_EXCEPTIONS
 
-        if remote_addr_exceptions:
-            if request.META.get('REMOTE_ADDR') in remote_addr_exceptions:
-                return None
+        if remote_addr_exceptions and \
+                request.META.get('REMOTE_ADDR') in remote_addr_exceptions:
+            return None
 
         # Don't lock down if the URL matches an exception pattern.
         if self.url_exceptions:

@@ -155,13 +155,15 @@ locked. For example::
 
 LOCKDOWN_REMOTE_ADDR_EXCEPTIONS
 -------------------------------
-An optional list addresses to be matched agains incomming
- `requests.META['REMOTE_ADDR']`. If IP is in this list, it will not be locked. For example::
 
-    LOCKDOWN_REMOTE_ADDR = (
-        '192.168.0.1',
+An optional list of IP-addresses to be matched against the requesting
+IP-address (from `requests.META['REMOTE_ADDR']`). If the requesting IP-address
+is in this list, it will not be locked. For example::
+
+    LOCKDOWN_REMOTE_ADDR_EXCEPTIONS = [
         '127.0.0.1',
-    )
+        '::1',
+    ]
 
 LOCKDOWN_UNTIL
 --------------
