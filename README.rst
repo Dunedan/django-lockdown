@@ -57,7 +57,7 @@ Usage
 Using the middleware
 --------------------
 
-To lock down the entire site, add the lockdown middleware to your middlewares:
+To lock down the entire site, add the lockdown middleware to your middlewares::
 
     MIDDLEWARE = [
         # ...
