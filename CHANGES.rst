@@ -12,6 +12,8 @@ tip (unreleased)
 
 - Integrate pre-commit for code style checks during commit and CI.
 
+- Added support for Django 2.1.
+
 1.5.0 (2017-12-05)
 ------------------
 

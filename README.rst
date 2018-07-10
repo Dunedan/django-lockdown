@@ -250,4 +250,4 @@ before searching for templates included in ``django-lockdown``.
 In your overwritten template the lockdown preview form is available in the
 template context as ``form``.
 
-.. _loaders: https://docs.djangoproject.com/en/2.0/ref/templates/api/#template-loaders
+.. _loaders: https://docs.djangoproject.com/en/2.1/ref/templates/api/#template-loaders
