@@ -12,7 +12,7 @@ django-lockdown
     :target: https://landscape.io/github/Dunedan/django-lockdown/master
     :alt: Code Health
 .. image:: https://img.shields.io/pypi/v/django-lockdown.svg
-    :target: https://pypi.python.org/pypi/django-lockdown/
+    :target: https://pypi.org/project/django-lockdown/
     :alt: Latest Version
 
 ``django-lockdown`` is a reusable Django application for locking down an entire
