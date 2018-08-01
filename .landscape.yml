@@ -9,6 +9,7 @@ pylint:
     - missing-docstring
     - no-self-use
     - unused-argument
+    - useless-object-inheritance
 pep8:
   disable:
     - N802
