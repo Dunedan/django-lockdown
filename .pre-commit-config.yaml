@@ -38,8 +38,10 @@ repos:
         additional_dependencies:
           - django
           - prospector
-          - pylint<2.0.0
-          - pylint-django<2.0.0
+          - pylint<2.0.0;python_version<="2.7"
+          - pylint>=2.1.1;python_version>="3.4"
+          - pylint-django<2.0.0;python_version<="2.7"
+          - pylint-django>=2.0.2;python_version>="3.4"
 
   - repo: git://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.4
