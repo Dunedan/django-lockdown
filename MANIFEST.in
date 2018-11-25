@@ -4,3 +4,4 @@ include LICENSE.txt
 include MANIFEST.in
 include README.rst
 recursive-include lockdown/templates *.html
+recursive-exclude lockdown/tests *

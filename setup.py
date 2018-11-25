@@ -13,7 +13,7 @@ setup(
     maintainer='Daniel Roschka',
     maintainer_email='danielroschka@phoenitydawn.de',
     url='https://github.com/Dunedan/django-lockdown/',
-    packages=find_packages(),
+    packages=find_packages(exclude=['lockdown.tests']),
     install_requires=['Django>=1.11'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
