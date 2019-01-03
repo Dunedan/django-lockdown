@@ -78,6 +78,49 @@ class BaseTests(TestCase):
         response = self.client.get(self.locked_url, REMOTE_ADDR='192.168.0.1')
         self.assertEqual(response.content, self.locked_contents)
 
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.1'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['127.0.0.1'])
+    def test_untrusted_proxy_lock(self):
+        """Test that a page is locked when proxy is not trusted.
+
+        The excepted IP are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings
+        """
+        response = self.client.get(self.locked_url,
+                                   REMOTE_ADDR='172.17.0.1',
+                                   HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.1'])
+    def test_no_trusted_proxy_lock(self):
+        """Test that a page is locked when x-forwarded-for is used w/o proxies.
+
+        The excepted IP are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings
+        """
+        response = self.client.get(self.locked_url,
+                                   REMOTE_ADDR='192.168.0.100',
+                                   HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.1'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['127.0.0.1'])
+    def test_trusted_proxy_unlock(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
+        """
+        response = self.client.get(self.locked_url,
+                                   REMOTE_ADDR='127.0.0.1',
+                                   HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertEqual(response.content, self.locked_contents)
+
     @patch('lockdown.tests.tests.middleware.settings.PASSWORDS', ('letmein',))
     def test_submit_password(self):
         """Test that access to locked content works with a correct password."""

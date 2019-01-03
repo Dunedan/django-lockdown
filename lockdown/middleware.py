@@ -47,7 +47,7 @@ class LockdownMiddleware(object):
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
                  url_exceptions=None, remote_addr_exceptions=None,
-                 extra_context=None, **form_kwargs):
+                 trusted_proxies=None, extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
@@ -62,6 +62,7 @@ class LockdownMiddleware(object):
         self.session_key = session_key
         self.url_exceptions = url_exceptions
         self.remote_addr_exceptions = remote_addr_exceptions
+        self.trusted_proxies = trusted_proxies
         self.extra_context = extra_context
 
     def __call__(self, request):
@@ -94,9 +95,20 @@ class LockdownMiddleware(object):
         else:
             remote_addr_exceptions = settings.REMOTE_ADDR_EXCEPTIONS
 
-        if remote_addr_exceptions and \
-                request.META.get('REMOTE_ADDR') in remote_addr_exceptions:
-            return None
+        if remote_addr_exceptions:
+            # If forwarding proxies are used they must be listed as trusted
+            trusted_proxies = self.trusted_proxies or settings.TRUSTED_PROXIES
+
+            remote_addr = request.META.get('REMOTE_ADDR')
+            if remote_addr in remote_addr_exceptions:
+                return None
+            if remote_addr in trusted_proxies:
+                # If REMOTE_ADDR is a trusted proxy check x-forwarded-for
+                x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+                if x_forwarded_for:
+                    remote_addr = x_forwarded_for.split(',')[-1].strip()
+                    if remote_addr in remote_addr_exceptions:
+                        return None
 
         # Don't lock down if the URL matches an exception pattern.
         if self.url_exceptions:
