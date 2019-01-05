@@ -168,6 +168,25 @@ is in this list, it will not be locked. For example::
         '::1',
     ]
 
+LOCKDOWN_TRUSTED_PROXIES
+-------------------------------
+
+A list of trusted proxy IP-addresses to be used in conjunction with 
+`LOCKDOWN_REMOTE_ADDR_EXCEPTIONS` when a reverse-proxy or load balancer is used.
+If the requesting IP address is from the trusted proxies list the last address from 
+the `X-Forwared-For` header (from `requests.META['HTTP_X_FORWARDED_FOR']`) will be 
+checked against `LOCKDOWN_REMOTE_ADDR_EXCEPTIONS` and locked or unlocked accordingly.
+
+For example::
+
+    LOCKDOWN_TRUSTED_PROXIES = [
+        '172.17.0.1',
+    ]
+    
+    LOCKDOWN_REMOTE_ADDR_EXCEPTIONS = [
+        '172.17.0.5',
+    ]
+
 LOCKDOWN_UNTIL
 --------------
 
