@@ -4,6 +4,8 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Added support for proxies when using IP-address based lockdown exceptions.
+
 1.6.0 (2018-11-25)
 ------------------
 
