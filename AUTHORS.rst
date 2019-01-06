@@ -5,3 +5,4 @@
 - Jan Van Bruggen <jancvanbruggen@gmail.com>
 - Adam Taylor <ataylor32@gmail.com>
 - Piotr Frankowski
+- Jairus Martin
