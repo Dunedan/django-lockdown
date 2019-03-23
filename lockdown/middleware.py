@@ -5,6 +5,7 @@ from importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import Resolver404, resolve
 
 from lockdown import settings
 
@@ -46,8 +47,9 @@ class LockdownMiddleware(object):
     # pylint: disable=too-many-arguments
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
-                 url_exceptions=None, remote_addr_exceptions=None,
-                 trusted_proxies=None, extra_context=None, **form_kwargs):
+                 url_exceptions=None, view_exceptions=None,
+                 remote_addr_exceptions=None, trusted_proxies=None,
+                 extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = settings.LOGOUT_KEY
@@ -117,6 +119,15 @@ class LockdownMiddleware(object):
             url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
         for pattern in url_exceptions:
             if pattern.search(request.path):
+                return None
+
+        # Don't lock down if the URL resolves to a whitelisted view.
+        try:
+            resolved_path = resolve(request.path)
+        except Resolver404:
+            pass
+        else:
+            if resolved_path.func in settings.VIEW_EXCEPTIONS:
                 return None
 
         # Don't lock down if outside of the lockdown dates.

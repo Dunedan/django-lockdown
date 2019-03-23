@@ -156,6 +156,24 @@ locked. For example::
         r'\.json$',   # unlock JSON API
     )
 
+LOCKDOWN_VIEW_EXCEPTIONS
+------------------------
+
+An optional list of regular expressions to be matched against the
+resolved views of incoming requests. If the URL of an incoming request
+resolves to one of the views in the list, it will not be locked.
+That's useful if you want to lock down a whole site using the middleware,
+but want to whitelist some localized URLs.
+
+For example:
+
+    from yourapp import one_view_to_unlock, another_view_to_unlock
+
+    LOCKDOWN_VIEW_EXCEPTIONS = [
+        one_view_to_unlock,
+        another_view_to_unlock
+    ]
+
 LOCKDOWN_REMOTE_ADDR_EXCEPTIONS
 -------------------------------
 

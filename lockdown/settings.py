@@ -2,6 +2,7 @@ from django.conf import settings
 
 ENABLED = getattr(settings, 'LOCKDOWN_ENABLED', True)
 URL_EXCEPTIONS = getattr(settings, 'LOCKDOWN_URL_EXCEPTIONS', ())
+VIEW_EXCEPTIONS = getattr(settings, 'LOCKDOWN_VIEW_EXCEPTIONS', [])
 REMOTE_ADDR_EXCEPTIONS = getattr(settings, 'LOCKDOWN_REMOTE_ADDR_EXCEPTIONS',
                                  [])
 TRUSTED_PROXIES = getattr(settings, 'LOCKDOWN_TRUSTED_PROXIES', [])

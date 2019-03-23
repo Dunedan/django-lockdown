@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from lockdown import middleware
 from lockdown.forms import AuthForm
+from lockdown.tests.views import a_view
 
 try:
     from unittest.mock import patch
@@ -49,8 +50,8 @@ class BaseTests(TestCase):
     def test_url_exceptions(self):
         """Test that a page isn't locked when its URL is in the exception list.
 
-        The excepted URLs are determinated by the
-        LOCKDOWN_URL_EXCEPTIONS setting.
+        The excepted URLs are determined by the LOCKDOWN_URL_EXCEPTIONS
+        setting.
         """
         response = self.client.get(self.locked_url)
         self.assertEqual(response.content, self.locked_contents)
@@ -319,6 +320,17 @@ class MiddlewareTests(BaseTests):
         django_settings.MIDDLEWARE.append(
             'lockdown.middleware.LockdownMiddleware',
         )
+
+    @patch('lockdown.tests.tests.middleware.settings.VIEW_EXCEPTIONS',
+           [a_view])
+    def test_view_exceptions(self):
+        """Test that a page isn't locked when its view whitelisted.
+
+        The excepted URLs are determined by the
+        LOCKDOWN_VIEW_EXCEPTIONS setting.
+        """
+        response = self.client.get(self.locked_url)
+        self.assertEqual(response.content, self.locked_contents)
 
     def tearDown(self):
         """Additional tear down for middleware tests."""

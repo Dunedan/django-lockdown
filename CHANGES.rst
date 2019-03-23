@@ -6,6 +6,9 @@ tip (unreleased)
 
 - Added support for proxies when using IP-address based lockdown exceptions.
 
+- Added the ability to whitelist views when locking down a whole site using
+  the middleware.
+
 1.6.0 (2018-11-25)
 ------------------
 
