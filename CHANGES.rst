@@ -9,6 +9,8 @@ tip (unreleased)
 - Added the ability to whitelist views when locking down a whole site using
   the middleware.
 
+- Added support for Django 2.2.
+
 1.6.0 (2018-11-25)
 ------------------
 
