@@ -17,14 +17,14 @@ repos:
       - id: detect-private-key
 
   - repo: git://github.com/adrienverge/yamllint
-    rev: v1.13.0
+    rev: v1.15.0
     hooks:
       - id: yamllint
         args:
           - -s
 
   - repo: git://github.com/pre-commit/mirrors-isort
-    rev: v4.3.4
+    rev: v4.3.15
     hooks:
       - id: isort
         args:
