@@ -15,6 +15,9 @@ tip (unreleased)
 
 - Added support for Django 2.2.
 
+- Only require ``mock`` as separate third-party test dependency for
+  Python <3.3.
+
 1.6.0 (2018-11-25)
 ------------------
 

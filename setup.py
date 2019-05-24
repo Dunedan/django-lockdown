@@ -1,7 +1,14 @@
+import sys
+
 from setuptools import find_packages, setup
 
 LONG_DESCRIPTION = '\n'.join([open('README.rst').read(),
                               open('CHANGES.rst').read()])
+
+_TESTS_REQUIRE = []
+if sys.version_info < (3, 3):
+    _TESTS_REQUIRE += ['mock']
+
 setup(
     name='django-lockdown',
     version='1.6.0',
@@ -36,7 +43,7 @@ setup(
         'Framework :: Django :: 2.2',
     ],
     zip_safe=False,
-    tests_require=['mock'],
+    tests_require=_TESTS_REQUIRE,
     test_suite='runtests.runtests',
     package_data={'lockdown': ['templates/lockdown/*.html']},
 )
