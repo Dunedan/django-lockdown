@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v2.1.0
+    rev: v2.2.3
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -23,8 +23,8 @@ repos:
         args:
           - -s
 
-  - repo: git://github.com/pre-commit/mirrors-isort
-    rev: v4.3.15
+  - repo: git://github.com/timothycrosley/isort
+    rev: 4.3.20
     hooks:
       - id: isort
         args:
@@ -50,13 +50,12 @@ repos:
       - id: forbid-crlf
       - id: forbid-tabs
 
-  - repo: git://github.com/Lucas-C/pre-commit-hooks-bandit
-    rev: v1.0.3
+  - repo: git://github.com/PyCQA/bandit
+    rev: 1.6.0
     hooks:
-      - id: python-bandit-vulnerability-check
+      - id: bandit
         args:
           - -l
-        files: .py$
 
   - repo: git://github.com/Lucas-C/pre-commit-hooks-safety
     rev: v1.1.0
