@@ -13,7 +13,7 @@ if sys.version_info < (3, 3):
 
 setup(
     name='django-lockdown',
-    version='1.6.0',
+    version='2.0.0',
     description=('Lock down a Django site or individual views, with '
                  'configurable preview authorization'),
     long_description=LONG_DESCRIPTION,

@@ -4,6 +4,9 @@ CHANGES
 tip (unreleased)
 ----------------
 
+2.0.0 (2019-05-26)
+------------------
+
 - Added support for proxies when using IP-address based lockdown exceptions.
 
 - This introduces a breaking change: Installations running behind a proxy will
