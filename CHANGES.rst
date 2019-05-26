@@ -18,6 +18,16 @@ tip (unreleased)
 - Only require ``mock`` as separate third-party test dependency for
   Python <3.3.
 
+- Fix detection of compacted IP-addresses.
+
+- This introduces a breaking change for users which make use of the
+  ``REMOTE_ADDR_EXCEPTIONS`` feature and passed the IP-addresses to except as
+  byte strings in the configuration. While it's unlikely somebody did that
+  with Python 3, it's the default for Python 2. With this version, byte
+  strings don't work anymore, but using unicode strings is required.
+
+- Add the ability to specify IP-subnets for remote addresses exception.
+
 1.6.0 (2018-11-25)
 ------------------
 

@@ -1,4 +1,5 @@
 import datetime
+import ipaddress
 import re
 from importlib import import_module
 
@@ -97,19 +98,29 @@ class LockdownMiddleware(object):
         else:
             remote_addr_exceptions = settings.REMOTE_ADDR_EXCEPTIONS
 
+        remote_addr_exceptions = [ipaddress.ip_network(ip)
+                                  for ip in remote_addr_exceptions]
         if remote_addr_exceptions:
             # If forwarding proxies are used they must be listed as trusted
             trusted_proxies = self.trusted_proxies or settings.TRUSTED_PROXIES
+            trusted_proxies = [ipaddress.ip_network(ip)
+                               for ip in trusted_proxies]
 
-            remote_addr = request.META.get('REMOTE_ADDR')
-            if remote_addr in remote_addr_exceptions:
+            remote_addr = ipaddress.ip_address(request.META.get('REMOTE_ADDR'))
+            if any(remote_addr for ip_exceptions in remote_addr_exceptions
+                   if remote_addr in ip_exceptions):
                 return None
-            if remote_addr in trusted_proxies:
+
+            if any(remote_addr for proxy in trusted_proxies
+                   if remote_addr in proxy):
                 # If REMOTE_ADDR is a trusted proxy check x-forwarded-for
                 x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
                 if x_forwarded_for:
-                    remote_addr = x_forwarded_for.split(',')[-1].strip()
-                    if remote_addr in remote_addr_exceptions:
+                    remote_addr = ipaddress.ip_address(
+                        x_forwarded_for.split(',')[-1].strip())
+                    if any(remote_addr for ip_exceptions in
+                           remote_addr_exceptions
+                           if remote_addr in ip_exceptions):
                         return None
 
         # Don't lock down if the URL matches an exception pattern.

@@ -108,6 +108,11 @@ The decorator accepts seven arguments:
   A list of regular expressions for which matching urls can bypass the lockdown
   (rather than using those defined in `LOCKDOWN_URL_EXCEPTIONS`_).
 
+``remote_addr_exceptions``
+ A list of IP-addresses or IP-subnets for which matching URLs can bypass the
+ lockdown (rather than using those defined in
+ `LOCKDOWN_REMOTE_ADDR_EXCEPTIONS`_).
+
 ``extra_context``
   A dictionary of context data that will be added to the default context data
   passed to the template.
@@ -177,9 +182,9 @@ For example:
 LOCKDOWN_REMOTE_ADDR_EXCEPTIONS
 -------------------------------
 
-An optional list of IP-addresses to be matched against the requesting
-IP-address (from `requests.META['REMOTE_ADDR']`). If the requesting IP-address
-is in this list, it will not be locked. For example::
+An optional list of IP-addresses or IP-subnets to be matched against the
+requesting IP-address (from `requests.META['REMOTE_ADDR']`). If the
+requesting IP-address is in this list, it will not be locked. For example::
 
     LOCKDOWN_REMOTE_ADDR_EXCEPTIONS = [
         '127.0.0.1',

@@ -1,3 +1,7 @@
+# pylint: disable=invalid-name,too-many-public-methods
+
+from __future__ import unicode_literals
+
 import datetime
 
 from django.conf import settings as django_settings
@@ -61,8 +65,8 @@ class BaseTests(TestCase):
     def test_remote_addr_exc_lock(self):
         """Test that a page is locked when client IP is not in exception list.
 
-        The excepted IP are determined by the
-        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting.
         """
         response = self.client.get(self.locked_url,
                                    REMOTE_ADDR='192.168.0.100')
@@ -73,10 +77,47 @@ class BaseTests(TestCase):
     def test_remote_addr_exc_unlock(self):
         """Test that a page isn't locked when client IP is in exception list.
 
-        The excepted IP are determined by the
-        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting.
         """
         response = self.client.get(self.locked_url, REMOTE_ADDR='192.168.0.1')
+        self.assertEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::1'])
+    def test_remote_addr_exc_unlock_ipv6(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting.
+        """
+        response = self.client.get(
+            self.locked_url,
+            REMOTE_ADDR='fd:0000:0000:0000:0000:0000:0000:0001')
+        self.assertEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.0/24'])
+    def test_remote_addr_exc_unlock_subnet(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting.
+        """
+        response = self.client.get(self.locked_url, REMOTE_ADDR='192.168.0.1')
+        self.assertEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::0/80'])
+    def test_remote_addr_exc_unlock_ipv6_subnet(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting.
+        """
+        response = self.client.get(
+            self.locked_url,
+            REMOTE_ADDR='fd:0000:0000:0000:0000:0000:0000:0001')
         self.assertEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
@@ -86,8 +127,8 @@ class BaseTests(TestCase):
     def test_untrusted_proxy_lock(self):
         """Test that a page is locked when proxy is not trusted.
 
-        The excepted IP are determined by the
-        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
         """
         response = self.client.get(self.locked_url,
                                    REMOTE_ADDR='172.17.0.1',
@@ -95,31 +136,164 @@ class BaseTests(TestCase):
         self.assertNotEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::2'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['fd::1'])
+    def test_untrusted_proxy_lock_ipv6(self):
+        """Test that a page is locked when proxy is not trusted.
+
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(
+            self.locked_url, REMOTE_ADDR='2001:db8::ff00:42:8329',
+            HTTP_X_FORWARDED_FOR='fd:0000:0000:0000:0000:0000:0000:0001')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.0/24'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['127.0.0.0/24'])
+    def test_untrusted_proxy_lock_subnet(self):
+        """Test that a page is locked when proxy is not trusted.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(self.locked_url,
+                                   REMOTE_ADDR='172.17.0.1',
+                                   HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::2'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['fd::1'])
+    def test_untrusted_proxy_lock_ipv6_subnet(self):
+        """Test that a page is locked when proxy is not trusted.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(
+            self.locked_url, REMOTE_ADDR='2001:db8::ff00:42:8329',
+            HTTP_X_FORWARDED_FOR='fd:0000:0000:0000:0000:0000:0000:0001')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
            ['192.168.0.1'])
     def test_no_trusted_proxy_lock(self):
         """Test that a page is locked when x-forwarded-for is used w/o proxies.
 
-        The excepted IP are determined by the
-        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
         """
         response = self.client.get(self.locked_url,
-                                   REMOTE_ADDR='192.168.0.100',
+                                   REMOTE_ADDR='10.0.0.1',
                                    HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::0/80'])
+    def test_no_trusted_proxy_lock_ipv6(self):
+        """Test that a page is locked when x-forwarded-for is used w/o proxies.
+
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(
+            self.locked_url,
+            REMOTE_ADDR='2001:db8::ff00:42:8329',
+            HTTP_X_FORWARDED_FOR='fd:0000:0000:0000:0000:0000:0000:0001')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.0/24'])
+    def test_no_trusted_proxy_lock_subnet(self):
+        """Test that a page is locked when x-forwarded-for is used w/o proxies.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(self.locked_url,
+                                   REMOTE_ADDR='10.0.0.1',
+                                   HTTP_X_FORWARDED_FOR='192.168.0.100')
+        self.assertNotEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::0/80'])
+    def test_no_trusted_proxy_lock_ipv6_subnet(self):
+        """Test that a page is locked when x-forwarded-for is used w/o proxies.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(
+            self.locked_url,
+            REMOTE_ADDR='fe::1',
+            HTTP_X_FORWARDED_FOR='fd::2')
         self.assertNotEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
            ['192.168.0.1'])
     @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
-           ['127.0.0.1'])
+           ['10.0.0.1'])
     def test_trusted_proxy_unlock(self):
         """Test that a page isn't locked when client IP is in exception list.
 
-        The excepted IP are determined by the
-        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS setting
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(self.locked_url,
+                                   REMOTE_ADDR='10.0.0.1',
+                                   HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd:0000:0000:0000:0000:0000:0000:0001'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['fd:0000:0000:0000:0000:0000:0000:0002'])
+    def test_trusted_proxy_unlock_ipv6(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP-addresses are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(
+            self.locked_url,
+            REMOTE_ADDR='fd:0000:0000:0000:0000:0000:0000:0002',
+            HTTP_X_FORWARDED_FOR='fd:0000:0000:0000:0000:0000:0000:0001')
+        self.assertEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['192.168.0.0/24'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['127.0.0.0/24'])
+    def test_trusted_proxy_unlock_subnet(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
         """
         response = self.client.get(self.locked_url,
                                    REMOTE_ADDR='127.0.0.1',
                                    HTTP_X_FORWARDED_FOR='192.168.0.1')
+        self.assertEqual(response.content, self.locked_contents)
+
+    @patch('lockdown.tests.tests.middleware.settings.REMOTE_ADDR_EXCEPTIONS',
+           ['fd::0/80'])
+    @patch('lockdown.tests.tests.middleware.settings.TRUSTED_PROXIES',
+           ['fe::0/80'])
+    def test_trusted_proxy_unlock_ipv6_subnet(self):
+        """Test that a page isn't locked when client IP is in exception list.
+
+        The excepted IP-subnets are determined by the
+        LOCKDOWN_REMOTE_ADDR_EXCEPTIONS and TRUSTED_PROXIES settings.
+        """
+        response = self.client.get(
+            self.locked_url,
+            REMOTE_ADDR='fe::2',
+            HTTP_X_FORWARDED_FOR='fd::1')
         self.assertEqual(response.content, self.locked_contents)
 
     @patch('lockdown.tests.tests.middleware.settings.PASSWORDS', ('letmein',))
@@ -260,13 +434,54 @@ class DecoratorTests(BaseTests):
 
     def test_overridden_ip_exceptions(self):
         """Test that locking works with overwritten remote_addr exceptions."""
-        url = '/locked/view/with/ip_exception1/'
+        url = '/locked/view/with/ip_exception/'
         response = self.client.post(url, REMOTE_ADDR='192.168.0.100',
                                     follow=True)
         self.assertTemplateUsed(response, 'lockdown/form.html')
 
-        url = '/locked/view/with/ip_exception1/'
+        url = '/locked/view/with/ip_exception/'
         response = self.client.post(url, REMOTE_ADDR='192.168.0.1',
+                                    follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+    def test_overridden_ip_exceptions_ipv6(self):
+        """Test that locking works with overwritten remote_addr exceptions."""
+        url = '/locked/view/with/ip_exception_ipv6/'
+        response = self.client.post(
+            url, REMOTE_ADDR='fd:0000:0000:0000:0000:0000:0000:0002',
+            follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+        url = '/locked/view/with/ip_exception_ipv6/'
+        response = self.client.post(
+            url, REMOTE_ADDR='fd:0000:0000:0000:0000:0000:0000:0001',
+            follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+    def test_overridden_ip_exceptions_subnet(self):
+        """Test that locking works with overwritten remote_addr exceptions."""
+        url = '/locked/view/with/ip_exception_subnet/'
+        response = self.client.post(url, REMOTE_ADDR='172.0.0.1',
+                                    follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+        url = '/locked/view/with/ip_exception_subnet/'
+        response = self.client.post(url, REMOTE_ADDR='192.168.0.1',
+                                    follow=True)
+        self.assertTemplateNotUsed(response, 'lockdown/form.html')
+        self.assertEqual(response.content, self.locked_contents)
+
+    def test_overridden_ip_exceptions_subnet_ipv6(self):
+        """Test that locking works with overwritten remote_addr exceptions."""
+        url = '/locked/view/with/ip_exception_ipv6_subnet/'
+        response = self.client.post(url, REMOTE_ADDR='2001:db8::ff00:42:8329',
+                                    follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
+        url = '/locked/view/with/ip_exception_ipv6_subnet/'
+        response = self.client.post(url, REMOTE_ADDR='fd::1',
                                     follow=True)
         self.assertTemplateNotUsed(response, 'lockdown/form.html')
         self.assertEqual(response.content, self.locked_contents)

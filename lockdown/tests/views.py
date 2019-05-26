@@ -1,3 +1,7 @@
+# pylint: disable=invalid-name
+
+from __future__ import unicode_literals
+
 import datetime
 
 from django.http import HttpResponse
@@ -34,7 +38,25 @@ def locked_view_with_exception(request):
 
 @lockdown(remote_addr_exceptions=['192.168.0.1'])
 def locked_view_with_ip_exception(request):
-    """View, locked except for the configured IP-address."""
+    """View, locked except for the configured IPv4-address."""
+    return HttpResponse('A locked view.')
+
+
+@lockdown(remote_addr_exceptions=['fd::1'])
+def locked_view_with_ip_exception_ipv6(request):
+    """View, locked except for the configured IPv6-address."""
+    return HttpResponse('A locked view.')
+
+
+@lockdown(remote_addr_exceptions=['192.168.0.0/24'])
+def locked_view_with_ip_exception_subnet(request):
+    """View, locked except for the configured IPv4-subnet."""
+    return HttpResponse('A locked view.')
+
+
+@lockdown(remote_addr_exceptions=['fd::0/80'])
+def locked_view_with_ip_exception_ipv6_subnet(request):
+    """View, locked except for the configured IPv6-subnet."""
     return HttpResponse('A locked view.')
 
 

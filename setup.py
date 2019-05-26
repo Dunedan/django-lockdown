@@ -5,8 +5,10 @@ from setuptools import find_packages, setup
 LONG_DESCRIPTION = '\n'.join([open('README.rst').read(),
                               open('CHANGES.rst').read()])
 
+_INSTALL_REQUIRES = ['Django>=1.11']
 _TESTS_REQUIRE = []
 if sys.version_info < (3, 3):
+    _INSTALL_REQUIRES += ['ipaddress']
     _TESTS_REQUIRE += ['mock']
 
 setup(
@@ -21,7 +23,7 @@ setup(
     maintainer_email='danielroschka@phoenitydawn.de',
     url='https://github.com/Dunedan/django-lockdown/',
     packages=find_packages(exclude=['lockdown.tests']),
-    install_requires=['Django>=1.11'],
+    install_requires=_INSTALL_REQUIRES,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
