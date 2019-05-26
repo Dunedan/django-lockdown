@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v2.2.3
+    rev: v2.1.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
