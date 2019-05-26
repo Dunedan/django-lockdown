@@ -6,6 +6,10 @@ tip (unreleased)
 
 - Added support for proxies when using IP-address based lockdown exceptions.
 
+- This introduces a breaking change: Installations running behind a proxy will
+  need to set the newly introduced ``LOCKDOWN_TRUSTED_PROXIES``, otherwise
+  access won't be granted anymore, when accessing the site through a proxy.
+
 - Added the ability to whitelist views when locking down a whole site using
   the middleware.
 
