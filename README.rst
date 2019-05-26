@@ -170,7 +170,7 @@ resolves to one of the views in the list, it will not be locked.
 That's useful if you want to lock down a whole site using the middleware,
 but want to whitelist some localized URLs.
 
-For example:
+For example::
 
     from yourapp import one_view_to_unlock, another_view_to_unlock
 
