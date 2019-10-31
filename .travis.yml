@@ -7,7 +7,8 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-  - "3.8"
+  # Exclude Python 3.8 from CI for now as prospector doesn't support it yet
+  #  - "3.8"
   - "pypy3.5"
 env:
   - DJANGO="Django>=1.11,<1.12"
