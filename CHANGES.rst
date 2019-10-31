@@ -4,6 +4,8 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Added support for Python 3.8.
+
 2.0.0 (2019-05-26)
 ------------------
 
