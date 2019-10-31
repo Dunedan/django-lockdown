@@ -48,7 +48,11 @@ repos:
     rev: v1.1.7
     hooks:
       - id: forbid-crlf
+        additional_dependencies:
+          - ruamel.yaml<=0.15.94
       - id: forbid-tabs
+        additional_dependencies:
+          - ruamel.yaml<=0.15.94
 
   - repo: git://github.com/PyCQA/bandit
     rev: 1.6.2
