@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v2.1.0
+    rev: v2.4.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -17,14 +17,14 @@ repos:
       - id: detect-private-key
 
   - repo: git://github.com/adrienverge/yamllint
-    rev: v1.15.0
+    rev: v1.18.0
     hooks:
       - id: yamllint
         args:
           - -s
 
   - repo: git://github.com/timothycrosley/isort
-    rev: 4.3.20
+    rev: 4.3.21
     hooks:
       - id: isort
         args:
@@ -45,13 +45,13 @@ repos:
           - pylint-django==2.0.10;python_version>="3.4"
 
   - repo: git://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.6
+    rev: v1.1.7
     hooks:
       - id: forbid-crlf
       - id: forbid-tabs
 
   - repo: git://github.com/PyCQA/bandit
-    rev: 1.6.0
+    rev: 1.6.2
     hooks:
       - id: bandit
         args:
