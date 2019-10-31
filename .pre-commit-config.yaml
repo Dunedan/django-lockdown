@@ -61,3 +61,8 @@ repos:
     rev: v1.1.0
     hooks:
       - id: python-safety-dependencies-check
+
+  - repo: git://github.com/codespell-project/codespell
+    rev: v1.16.0
+    hooks:
+      - id: codespell

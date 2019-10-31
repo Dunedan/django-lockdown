@@ -7,7 +7,7 @@ all points in the following list:
 - [ ] Ensure your code follows the [Python Style Guide (PEP8)][1] and the
       [Docstring Conventions (PEP257)][2].
 - [ ] Update the `AUTHORS.rst`, `CHANGES.rst` and `README.rst` as necessary.
-- [ ] Check that [continous integration (CI)][1] runs succeed after you opened
+- [ ] Check that [continuous integration (CI)][1] runs succeed after you opened
       the pull request and fix the issues it detects.
 
 Please also replace this template with a description of your changes before you
