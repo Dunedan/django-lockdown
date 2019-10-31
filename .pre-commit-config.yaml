@@ -32,7 +32,7 @@ repos:
           - --diff
 
   - repo: git://github.com/PyCQA/prospector/
-    rev: 1.1.6.2
+    rev: 1.1.7
     hooks:
       - id: prospector
         additional_dependencies:
@@ -40,9 +40,9 @@ repos:
           - ipaddress
           - prospector
           - pylint<2.0.0;python_version<="2.7"
-          - pylint==2.1.1;python_version>="3.4"
+          - pylint==2.3.1;python_version>="3.4"
           - pylint-django<2.0.0;python_version<="2.7"
-          - pylint-django==2.0.2;python_version>="3.4"
+          - pylint-django==2.0.10;python_version>="3.4"
 
   - repo: git://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.6
