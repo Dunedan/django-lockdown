@@ -6,6 +6,8 @@ tip (unreleased)
 
 - Added support for Python 3.8.
 
+- Added support for Django 3.0.
+
 2.0.0 (2019-05-26)
 ------------------
 
