@@ -8,6 +8,8 @@ tip (unreleased)
 
 - Added support for Django 3.0.
 
+- Removed support for Python 2.7 and 3.4.
+
 2.0.0 (2019-05-26)
 ------------------
 

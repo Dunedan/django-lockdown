@@ -1,7 +1,5 @@
 # pylint: disable=invalid-name
 
-from __future__ import unicode_literals
-
 import datetime
 
 from django.http import HttpResponse

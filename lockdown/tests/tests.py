@@ -1,21 +1,16 @@
 # pylint: disable=invalid-name,too-many-public-methods
 
-from __future__ import unicode_literals
-
 import datetime
+from unittest.mock import patch
 
 from django.conf import settings as django_settings
+from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
 from lockdown import middleware
 from lockdown.forms import AuthForm
 from lockdown.tests.views import a_view
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
 
 
 class BaseTests(TestCase):
@@ -570,7 +565,6 @@ class AuthFormTests(TestCase):
 
     def add_user(self, username='test', password='pw', **kwargs):  # nosec
         """Add a user used for testing the auth form."""
-        from django.contrib.auth.models import User
         user = User(username=username, **kwargs)
         user.set_password(password)
         user.save()
