@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-tip (unreleased)
-----------------
+3.0.0. (2020-01-01)
+-------------------
 
 - Added support for Python 3.8.
 
