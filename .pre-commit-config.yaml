@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v2.5.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -17,7 +17,7 @@ repos:
       - id: detect-private-key
 
   - repo: git://github.com/adrienverge/yamllint
-    rev: v1.18.0
+    rev: v1.20.0
     hooks:
       - id: yamllint
         args:
