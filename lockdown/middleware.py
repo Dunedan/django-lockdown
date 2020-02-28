@@ -3,12 +3,11 @@ import ipaddress
 import re
 from importlib import import_module
 
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import Resolver404, resolve
-
-from lockdown import settings
 
 
 def compile_url_exceptions(url_exceptions):
@@ -53,9 +52,13 @@ class LockdownMiddleware(object):
                  extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
-            logout_key = settings.LOGOUT_KEY
+            logout_key = getattr(settings,
+                                 'LOCKDOWN_LOGOUT_KEY',
+                                 'preview-logout')
         if session_key is None:
-            session_key = settings.SESSION_KEY
+            session_key = getattr(settings,
+                                  'LOCKDOWN_SESSION_KEY',
+                                  'lockdown-allow')
         self.get_response = get_response
         self.form = form
         self.form_kwargs = form_kwargs
@@ -88,7 +91,7 @@ class LockdownMiddleware(object):
                                        'sessions framework')
 
         # Don't lock down if django-lockdown is disabled altogether.
-        if settings.ENABLED is False:
+        if getattr(settings, 'LOCKDOWN_ENABLED', True) is False:
             return None
 
         # Don't lock down if the client REMOTE_ADDR matched and is part of the
@@ -96,13 +99,16 @@ class LockdownMiddleware(object):
         if self.remote_addr_exceptions:
             remote_addr_exceptions = self.remote_addr_exceptions
         else:
-            remote_addr_exceptions = settings.REMOTE_ADDR_EXCEPTIONS
+            remote_addr_exceptions = getattr(settings,
+                                             'LOCKDOWN_REMOTE_ADDR_EXCEPTIONS',
+                                             [])
 
         remote_addr_exceptions = [ipaddress.ip_network(ip)
                                   for ip in remote_addr_exceptions]
         if remote_addr_exceptions:
             # If forwarding proxies are used they must be listed as trusted
-            trusted_proxies = self.trusted_proxies or settings.TRUSTED_PROXIES
+            trusted_proxies = self.trusted_proxies or \
+                getattr(settings, 'LOCKDOWN_TRUSTED_PROXIES', [])
             trusted_proxies = [ipaddress.ip_network(ip)
                                for ip in trusted_proxies]
 
@@ -127,7 +133,8 @@ class LockdownMiddleware(object):
         if self.url_exceptions:
             url_exceptions = compile_url_exceptions(self.url_exceptions)
         else:
-            url_exceptions = compile_url_exceptions(settings.URL_EXCEPTIONS)
+            url_exceptions = compile_url_exceptions(
+                getattr(settings, 'LOCKDOWN_URL_EXCEPTIONS', ()))
         for pattern in url_exceptions:
             if pattern.search(request.path):
                 return None
@@ -138,19 +145,20 @@ class LockdownMiddleware(object):
         except Resolver404:
             pass
         else:
-            if resolved_path.func in settings.VIEW_EXCEPTIONS:
+            if resolved_path.func in getattr(
+                    settings, 'LOCKDOWN_VIEW_EXCEPTIONS', []):
                 return None
 
         # Don't lock down if outside of the lockdown dates.
         if self.until_date:
             until_date = self.until_date
         else:
-            until_date = settings.UNTIL_DATE
+            until_date = getattr(settings, "LOCKDOWN_UNTIL_DATE", None)
 
         if self.after_date:
             after_date = self.after_date
         else:
-            after_date = settings.AFTER_DATE
+            after_date = getattr(settings, "LOCKDOWN_AFTER_DATE", None)
 
         if until_date or after_date:
             locked_date = False
@@ -165,7 +173,10 @@ class LockdownMiddleware(object):
         if self.form:
             form_class = self.form
         else:
-            form_class = get_lockdown_form(settings.FORM)
+            form_class = get_lockdown_form(
+                getattr(settings,
+                        'LOCKDOWN_FORM',
+                        'lockdown.forms.LockdownForm'))
         form = form_class(data=form_data, **self.form_kwargs)
 
         authorized = False

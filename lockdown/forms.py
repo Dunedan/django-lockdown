@@ -1,9 +1,7 @@
 from django import forms
-from django.conf import settings as django_settings
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
-
-from lockdown import settings
 
 
 class LockdownForm(forms.Form):
@@ -16,7 +14,10 @@ class LockdownForm(forms.Form):
         """Initialize the form by setting the valid passwords."""
         super(LockdownForm, self).__init__(*args, **kwargs)
         if passwords is None:
-            passwords = settings.PASSWORDS
+            passwords = getattr(settings, 'LOCKDOWN_PASSWORDS', ())
+            if not isinstance(passwords, (tuple, list)):
+                passwords = (passwords,) if passwords else ()
+
         self.valid_passwords = passwords
 
     def clean_password(self):
@@ -60,10 +61,11 @@ class AuthForm(AuthenticationForm):
         """Initialize the form by setting permissions needed for access."""
         super(AuthForm, self).__init__(*args, **kwargs)
         if staff_only is None:
-            staff_only = getattr(django_settings,
-                                 'LOCKDOWN_AUTHFORM_STAFF_ONLY', True)
+            staff_only = getattr(settings,
+                                 'LOCKDOWN_AUTHFORM_STAFF_ONLY',
+                                 True)
         if superusers_only is None:
-            superusers_only = getattr(django_settings,
+            superusers_only = getattr(settings,
                                       'LOCKDOWN_AUTHFORM_SUPERUSERS_ONLY',
                                       False)
         self.staff_only = staff_only
