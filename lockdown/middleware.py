@@ -47,9 +47,8 @@ class LockdownMiddleware(object):
     # pylint: disable=too-many-arguments
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
-                 url_exceptions=None, view_exceptions=None,
-                 remote_addr_exceptions=None, trusted_proxies=None,
-                 extra_context=None, **form_kwargs):
+                 url_exceptions=None, remote_addr_exceptions=None,
+                 trusted_proxies=None, extra_context=None, **form_kwargs):
         """Initialize the middleware, by setting the configuration values."""
         if logout_key is None:
             logout_key = getattr(settings,
