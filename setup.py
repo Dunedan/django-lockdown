@@ -16,7 +16,7 @@ setup(
     maintainer_email='danielroschka@phoenitydawn.de',
     url='https://github.com/Dunedan/django-lockdown/',
     packages=find_packages(exclude=['lockdown.tests']),
-    install_requires=['Django>=1.11'],
+    install_requires=['Django>=2.2'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -31,9 +31,6 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Framework :: Django',
-        'Framework :: Django :: 1.11',
-        'Framework :: Django :: 2.0',
-        'Framework :: Django :: 2.1',
         'Framework :: Django :: 2.2',
         'Framework :: Django :: 3.0',
     ],
