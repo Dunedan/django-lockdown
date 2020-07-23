@@ -24,7 +24,7 @@ repos:
           - -s
 
   - repo: git://github.com/timothycrosley/isort
-    rev: 5.1.4
+    rev: 4.3.21
     hooks:
       - id: isort
         args:
