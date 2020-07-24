@@ -35,7 +35,7 @@ class BaseTests(TestCase):
         """Test if the login form contains a proper password field."""
         response = self.client.get(self.locked_url)
         form = response.context['form']
-        self.assertTrue('password' in form.fields)
+        self.assertIn('password', form.fields)
 
     @override_settings(LOCKDOWN_ENABLED=False)
     def test_global_disable(self):
@@ -478,7 +478,7 @@ class DecoratorTests(BaseTests):
         """Test that locking works when overriding the extra context."""
         url = '/locked/view/with/extra/context/'
         response = self.client.get(url)
-        self.assertTrue('foo' in response.context)
+        self.assertIn('foo', response.context)
 
 
 class MiddlewareTests(BaseTests):
