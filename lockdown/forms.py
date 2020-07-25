@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 class LockdownForm(forms.Form):
     """Defines a form to enter a password for accessing locked down content."""
 
-    password = forms.CharField(widget=forms.PasswordInput(render_value=False))
+    password = forms.CharField(widget=forms.PasswordInput())
 
     # pylint: disable=keyword-arg-before-vararg
     def __init__(self, passwords=None, *args, **kwargs):
