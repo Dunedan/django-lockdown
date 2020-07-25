@@ -489,7 +489,7 @@ class MiddlewareTests(BaseTests):
 
     def setUp(self):
         """Additional setup for middleware tests."""
-        super(MiddlewareTests, self).setUp()
+        super().setUp()
         self._old_middleware_classes = django_settings.MIDDLEWARE
         django_settings.MIDDLEWARE.append(
             'lockdown.middleware.LockdownMiddleware',
@@ -508,7 +508,7 @@ class MiddlewareTests(BaseTests):
     def tearDown(self):
         """Additional tear down for middleware tests."""
         django_settings.MIDDLEWARE = self._old_middleware_classes
-        super(MiddlewareTests, self).tearDown()
+        super().tearDown()
 
 
 class AuthFormTests(TestCase):

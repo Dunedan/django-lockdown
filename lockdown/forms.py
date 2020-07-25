@@ -12,7 +12,7 @@ class LockdownForm(forms.Form):
     # pylint: disable=keyword-arg-before-vararg
     def __init__(self, passwords=None, *args, **kwargs):
         """Initialize the form by setting the valid passwords."""
-        super(LockdownForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if passwords is None:
             passwords = getattr(settings, 'LOCKDOWN_PASSWORDS', ())
             if not isinstance(passwords, (tuple, list)):
@@ -59,7 +59,7 @@ class AuthForm(AuthenticationForm):
     def __init__(self, staff_only=None, superusers_only=None, *args,
                  **kwargs):
         """Initialize the form by setting permissions needed for access."""
-        super(AuthForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if staff_only is None:
             staff_only = getattr(settings,
                                  'LOCKDOWN_AUTHFORM_STAFF_ONLY',
@@ -73,7 +73,7 @@ class AuthForm(AuthenticationForm):
 
     def clean(self):
         """When receiving the filled out form, check for valid access."""
-        cleaned_data = super(AuthForm, self).clean()
+        cleaned_data = super().clean()
         user = self.get_user()
         if self.staff_only and (not user or not user.is_staff):
             raise forms.ValidationError('Sorry, only staff are allowed.')
