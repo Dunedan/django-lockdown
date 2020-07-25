@@ -532,6 +532,15 @@ class AuthFormTests(TestCase):
         user.set_password(password)
         user.save()
 
+    def test_inactive_user(self):
+        """Test access to a locked page with an inactive user."""
+        url = '/auth/user/locked/view/'
+        self.add_user(is_active=False)
+
+        post_data = {'username': 'test', 'password': 'pw'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lockdown/form.html')
+
     def test_user(self):
         """Test access to a locked page which requires authorization."""
         url = '/auth/user/locked/view/'
