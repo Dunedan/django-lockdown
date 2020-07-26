@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v3.1.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -24,7 +24,7 @@ repos:
           - -s
 
   - repo: git://github.com/timothycrosley/isort
-    rev: 4.3.21
+    rev: 5.1.4
     hooks:
       - id: isort
         args:
@@ -41,7 +41,7 @@ repos:
           - prospector
 
   - repo: git://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.8
+    rev: v1.1.9
     hooks:
       - id: forbid-crlf
       - id: forbid-tabs
