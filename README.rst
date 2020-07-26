@@ -2,8 +2,8 @@
 django-lockdown
 ===============
 
-.. image:: https://travis-ci.org/Dunedan/django-lockdown.svg?branch=master
-    :target: https://travis-ci.org/Dunedan/django-lockdown
+.. image:: https://github.com/Dunedan/django-lockdown/workflows/CI/badge.svg
+    :target: https://github.com/Dunedan/django-lockdown/actions
     :alt: Build Status
 .. image:: https://coveralls.io/repos/Dunedan/django-lockdown/badge.svg
     :target: https://coveralls.io/r/Dunedan/django-lockdown

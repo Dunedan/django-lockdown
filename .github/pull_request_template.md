@@ -15,4 +15,4 @@ open the pull request.
 
 [1]: https://www.python.org/dev/peps/pep-0008/
 [2]: https://www.python.org/dev/peps/pep-0257/
-[3]: https://travis-ci.org/Dunedan/django-lockdown
+[3]: https://github.com/Dunedan/django-lockdown/actions
