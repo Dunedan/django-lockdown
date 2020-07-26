@@ -1,0 +1,40 @@
+---
+name: CI
+on:
+  - push
+  - pull_request
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version:
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
+          - pypy3
+        django-version:
+          - 2.2
+          - 3.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Django
+        run: pip3 install ${{ matrix.django-version}}
+      - name: Install coveralls
+        run: pip3 install coveralls
+      - name: Run tests
+        run: coverage run ./runtests.py
+      - name: Run coveralls
+        run: coveralls
+  pre-commit:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: pre-commit/action@v2.0.0
