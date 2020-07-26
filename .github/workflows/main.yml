@@ -34,6 +34,8 @@ jobs:
         run: coverage run ./runtests.py
       - name: Run coveralls
         run: coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   pre-commit:
     runs-on: ubuntu-20.04
     steps:
