@@ -8,6 +8,8 @@ tip (unreleased)
 
 - Add support for Python 3.9 and remove support for Python 3.5.
 
+- Add support for Django 3.1.
+
 3.0.0. (2020-01-01)
 -------------------
 
