@@ -10,17 +10,14 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - 3.5
           - 3.6
           - 3.7
           - 3.8
+          - 3.9
           - pypy3
         django-version:
           - Django>=2.2,<3.0
           - Django>=3.0,<3.1
-        exclude:
-          - python-version: 3.5
-            django-version: Django>=3.0,<3.1
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2

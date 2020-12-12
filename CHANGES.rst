@@ -6,6 +6,8 @@ tip (unreleased)
 
 - Remove support for end-of-life Django versions (1.11, 2.0 and 2.1).
 
+- Add support for Python 3.9 and remove support for Python 3.5.
+
 3.0.0. (2020-01-01)
 -------------------
 
