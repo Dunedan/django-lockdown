@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-tip (unreleased)
-----------------
+4.0.0 (2021-02-14)
+------------------
 
 - Remove support for end-of-life Django versions (1.11, 2.0 and 2.1).
 
