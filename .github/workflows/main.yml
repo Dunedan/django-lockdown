@@ -15,7 +15,7 @@ jobs:
           - "3.10"
           - "3.11"
           - "3.12"
-          - "pypy3.10"
+          - "pypy3.9"
         django-version:
           - Django>=3.2,<4.0
           - Django>=4.0,<4.1
@@ -29,7 +29,7 @@ jobs:
             django-version: "Django>=5.0,<5.1"
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Django
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.9
       - uses: pre-commit/action@v2.0.0
