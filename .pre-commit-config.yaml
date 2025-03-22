@@ -41,6 +41,7 @@ repos:
           - django
           - ipaddress
           - prospector
+          - setuptools
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
