@@ -1,3 +1,4 @@
+# pylint: disable=unspecified-encoding,consider-using-with
 from setuptools import find_packages, setup
 
 LONG_DESCRIPTION = '\n'.join([open('README.rst').read(),
