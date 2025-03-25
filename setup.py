@@ -1,8 +1,8 @@
-# pylint: disable=unspecified-encoding,consider-using-with
 from setuptools import find_packages, setup
 
-LONG_DESCRIPTION = '\n'.join([open('README.rst').read(),
-                              open('CHANGES.rst').read()])
+with open('README.rst', encoding='utf-8') as rfd:
+    with open('CHANGES.rst', encoding='utf-8') as cfd:
+        LONG_DESCRIPTION = "\n".join([rfd.read(), cfd.read()])
 
 setup(
     name='django-lockdown',
