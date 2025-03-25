@@ -37,6 +37,7 @@ repos:
       - id: prospector
         additional_dependencies:
           - django
+          - setuptools
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
