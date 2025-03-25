@@ -27,16 +27,18 @@ def get_lockdown_form(form_path):
     attr = form_path_list[-1]
     try:
         mod = import_module(new_module)
-    except (ImportError, ValueError) as exc:
+    except (ImportError, ValueError):
+        # pylint: disable=raise-missing-from
         raise ImproperlyConfigured("Module configured in LOCKDOWN_FORM "
                                    f"({new_module}) to contain the form class "
-                                   "couldn't be " "found.") from exc
+                                   "couldn't be " "found.")
     try:
         form = getattr(mod, attr)
-    except AttributeError as exc:
+    except AttributeError:
+        # pylint: disable=raise-missing-from
         raise ImproperlyConfigured('The module configured in LOCKDOWN_FORM '
                                    f" ({new_module}) doesn't define a '{attr}'"
-                                   " form.") from exc
+                                   " form.")
     return form
 
 
