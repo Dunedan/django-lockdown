@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+Unreleased
+----------
+
+- Updated pre-commit hooks and modernize code style. Most notably started to
+  use f-strings.
+
 4.0.0 (2021-02-14)
 ------------------
 
