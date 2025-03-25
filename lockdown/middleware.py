@@ -44,7 +44,7 @@ def get_lockdown_form(form_path):
 class LockdownMiddleware(object):
     """Middleware to lock down a whole Django site."""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
                  url_exceptions=None, remote_addr_exceptions=None,
