@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-5.0.0 (Unreleased)
-------------------
+Unreleased
+----------
 
 - Remove support for end-of-life Django versions (2.2, 3.0 and 3.1).
 
@@ -11,6 +11,9 @@ CHANGES
 - Add support for Django 3.2, 4.0, 4.1, 4.2 and 5.0.
 
 - Add support for Python 3.10, 3.11 and 3.12.
+
+- Updated pre-commit hooks and modernize code style. Most notably started to
+  use f-strings.
 
 4.0.0 (2021-02-14)
 ------------------

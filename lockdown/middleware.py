@@ -28,15 +28,17 @@ def get_lockdown_form(form_path):
     try:
         mod = import_module(new_module)
     except (ImportError, ValueError):
-        raise ImproperlyConfigured("Module configured in LOCKDOWN_FORM (%s) to"
-                                   " contain the form class couldn't be "
-                                   "found." % new_module)
+        # pylint: disable=raise-missing-from
+        raise ImproperlyConfigured("Module configured in LOCKDOWN_FORM "
+                                   f"({new_module}) to contain the form class "
+                                   "couldn't be " "found.")
     try:
         form = getattr(mod, attr)
     except AttributeError:
+        # pylint: disable=raise-missing-from
         raise ImproperlyConfigured('The module configured in LOCKDOWN_FORM '
-                                   ' (%s) doesn\'t define a "%s" form.'
-                                   % (new_module, attr))
+                                   f" ({new_module}) doesn't define a '{attr}'"
+                                   " form.")
     return form
 
 
@@ -44,7 +46,7 @@ def get_lockdown_form(form_path):
 class LockdownMiddleware(object):
     """Middleware to lock down a whole Django site."""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def __init__(self, get_response=None, form=None, until_date=None,
                  after_date=None, logout_key=None, session_key=None,
                  url_exceptions=None, remote_addr_exceptions=None,
@@ -85,9 +87,9 @@ class LockdownMiddleware(object):
         """Check if each request is allowed to access the current resource."""
         try:
             session = request.session
-        except AttributeError:
+        except AttributeError as exc:
             raise ImproperlyConfigured('django-lockdown requires the Django '
-                                       'sessions framework')
+                                       'sessions framework') from exc
 
         # Don't lock down if django-lockdown is disabled altogether.
         if getattr(settings, 'LOCKDOWN_ENABLED', True) is False:
@@ -221,5 +223,5 @@ class LockdownMiddleware(object):
         if self.logout_key and self.logout_key in request.GET:
             del querystring[self.logout_key]
         if querystring:
-            url = '%s?%s' % (url, querystring.urlencode())
+            url = f'{url}?{querystring.urlencode()}'
         return HttpResponseRedirect(url)
