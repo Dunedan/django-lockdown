@@ -17,7 +17,7 @@ setup(
     maintainer_email='danielroschka@phoenitydawn.de',
     url='https://github.com/Dunedan/django-lockdown/',
     packages=find_packages(exclude=['lockdown.tests']),
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     install_requires=['Django>=3.2'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -26,7 +26,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',

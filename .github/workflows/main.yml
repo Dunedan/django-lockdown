@@ -10,7 +10,6 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
@@ -23,8 +22,6 @@ jobs:
           - Django>=4.2,<5.0
           - Django>=5.0,<5.1
         exclude:
-          - python-version: "3.8"
-            django-version: "Django>=5.0,<5.1"
           - python-version: "3.9"
             django-version: "Django>=5.0,<5.1"
     steps:

@@ -6,7 +6,7 @@ Unreleased
 
 - Remove support for end-of-life Django versions (2.2, 3.0 and 3.1).
 
-- Remove support for end-of-life Python versions (3.6 and 3.7).
+- Remove support for end-of-life Python versions (3.6, 3.7 and 3.8).
 
 - Add support for Django 3.2, 4.0, 4.1, 4.2 and 5.0.
 
