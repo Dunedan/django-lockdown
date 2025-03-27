@@ -6,3 +6,4 @@
 - Adam Taylor <ataylor32@gmail.com>
 - Piotr Frankowski
 - Jairus Martin
+- Bruno Alla

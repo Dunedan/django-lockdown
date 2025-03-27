@@ -88,7 +88,7 @@ class AuthForm(AuthenticationForm):
         in the user's session.
         """
         user = self.get_user()
-        return '%s:%s' % (user.backend, user.pk)
+        return f'{user.backend}:{user.pk}'
 
     def authenticate(self, token_value):
         """Check that the password is valid.

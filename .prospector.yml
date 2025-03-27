@@ -6,6 +6,7 @@ uses:
   - django
 pylint:
   disable:
+    - django-not-configured
     - missing-docstring
     - no-self-use
     - unused-argument

@@ -3,7 +3,8 @@
 import datetime
 
 from django.conf import settings as django_settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import \
+    User  # pylint: disable=imported-auth-user
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
