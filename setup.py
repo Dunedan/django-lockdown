@@ -18,7 +18,7 @@ setup(
     url='https://github.com/Dunedan/django-lockdown/',
     packages=find_packages(exclude=['lockdown.tests']),
     python_requires='>=3.9',
-    install_requires=['Django>=3.2'],
+    install_requires=['Django>=4.2'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -33,9 +33,6 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Framework :: Django',
-        'Framework :: Django :: 3.2',
-        'Framework :: Django :: 4.0',
-        'Framework :: Django :: 4.1',
         'Framework :: Django :: 4.2',
         'Framework :: Django :: 5.0',
     ],
