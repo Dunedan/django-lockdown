@@ -8,9 +8,9 @@ Unreleased
 
 - Remove support for end-of-life Python versions (3.6, 3.7 and 3.8).
 
-- Add support for Django 3.2, 4.0, 4.1, 4.2 and 5.0.
+- Add support for Django 3.2, 4.0, 4.1, 4.2, 5.0 and 5.1.
 
-- Add support for Python 3.10, 3.11 and 3.12.
+- Add support for Python 3.10, 3.11, 3.12 and 3.13.
 
 - Updated pre-commit hooks and modernize code style. Most notably started to
   use f-strings.
