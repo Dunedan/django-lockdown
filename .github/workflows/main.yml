@@ -20,11 +20,14 @@ jobs:
           - Django>=4.2,<5.0
           - Django>=5.0,<5.1
           - Django>=5.1,<5.2
+          - Django>=5.2rc1,<6.0
         exclude:
           - python-version: "3.9"
             django-version: "Django>=5.0,<5.1"
           - python-version: "3.9"
             django-version: "Django>=5.1,<5.2"
+          - python-version: "3.9"
+            django-version: "Django>=5.2rc1,<6.0"
           - python-version: "3.13"
             django-version: "Django>=4.2,<5.0"
           - python-version: "3.13"
