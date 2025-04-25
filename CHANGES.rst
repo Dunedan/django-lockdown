@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-Unreleased
-----------
+5.0.0 (2025-04-25)
+------------------
 
 - Remove support for end-of-life Django versions (from 2.2 until 4.1).
 

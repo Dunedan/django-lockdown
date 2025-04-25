@@ -6,7 +6,7 @@ with open('README.rst', encoding='utf-8') as rfd:
 
 setup(
     name='django-lockdown',
-    version='4.0.0',
+    version='5.0.0',
     description=('Lock down a Django site or individual views, with '
                  'configurable preview authorization'),
     long_description=LONG_DESCRIPTION,
